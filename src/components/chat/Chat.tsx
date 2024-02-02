@@ -44,7 +44,7 @@ const Chat: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
 
-  const userId = getPatientInfo(); // Replace with the actual user ID of the sender
+  const userId = getPatientInfo()?.id; // Replace with the actual user ID of the sender
   const doctorId = getSelectedDoctor()
 
   console.log(userId, doctorId);
@@ -61,7 +61,7 @@ const Chat: React.FC = () => {
   useEffect(() => {
     // Connect to the WebSocket server
     const socket = new WebSocket(
-      `wss://3ca9-194-93-25-68.ngrok-free.app/ws/chat/${chatId}/`
+      `wss://3ca9-194-93-25-68.ngrok-free.app/ws/chat/${chatId}/${userId}`
     );
 
     // Listen for incoming messages from the server
