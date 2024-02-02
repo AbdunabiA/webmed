@@ -132,7 +132,7 @@ function App() {
             <Route path="/success" element={<SuccessfulPage />} />
             <Route path="/rating" element={<HalfRating />} />
             <Route path="/meeting/:callId/:callInfo" element={<Meeting />} />
-            <Route path="/chat/:chatId/:chatInfo" element={<Chat />} />
+            <Route path="/meeting_chat/:chatId/:chatInfo" element={<Chat />} />
             <Route path="/payment" element={<Payment />} />
             {/*<Route
 							path="/meeting-observer/:callId"
