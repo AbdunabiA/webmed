@@ -11,6 +11,8 @@ import {
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
+import { useParams } from "react-router-dom";
+import { getPatientInfo, getSelectedDoctor, getUser } from "../../utils/storage";
 
 interface Message {
   text: string;
@@ -42,7 +44,14 @@ const Chat: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
 
-  const userSenderId = "USER_ID_1"; // Replace with the actual user ID of the sender
+  const userId = getPatientInfo(); // Replace with the actual user ID of the sender
+  const doctorId = getSelectedDoctor()
+
+  console.log(userId, doctorId);
+  
+
+  const {chatId} = useParams()
+
   const userReceiver: User = {
     userId: "USER_ID_2", // Replace with the actual user ID of the receiver
     userName: "Receiver User", // Replace with the actual user name of the receiver
@@ -51,7 +60,9 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     // Connect to the WebSocket server
-    const socket = new WebSocket(`wss://telecure.ru/chat/${userSenderId}`);
+    const socket = new WebSocket(
+      `wss://3ca9-194-93-25-68.ngrok-free.app/ws/chat/${chatId}/`
+    );
 
     // Listen for incoming messages from the server
     socket.addEventListener("message", (event) => {
@@ -66,7 +77,7 @@ const Chat: React.FC = () => {
     return () => {
       socket.close();
     };
-  }, [userSenderId]);
+  }, [userId]);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -79,7 +90,7 @@ const Chat: React.FC = () => {
     if (ws) {
       const message: Message = {
         text: newMessage,
-        sender: userSenderId,
+        sender: userId,
       };
       ws.send(JSON.stringify(message));
 
