@@ -14,6 +14,7 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { useParams } from "react-router-dom";
 import { getPatientInfo, getSelectedDoctor, getUser } from "../../utils/storage";
 import { decryptCallId } from "../../utils/decryption";
+import { WEBSOCKET_API } from "../../utils/api";
 
 interface Message {
   text: string;
@@ -64,7 +65,7 @@ const Chat: React.FC = () => {
   useEffect(() => {
     // Connect to the WebSocket server
     const socket = new WebSocket(
-      `wss://3ca9-194-93-25-68.ngrok-free.app/ws/chat/${chatId}/`
+      `${WEBSOCKET_API}chat/${chatId}/`
     );
 
     // Listen for incoming messages from the server

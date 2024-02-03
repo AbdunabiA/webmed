@@ -4,6 +4,8 @@ import { ISelectedDateTime } from "../components/appointment/types";
 
 export const BACKEND_URL = "https://telecure.ru/api/v1";
 
+export const WEBSOCKET_API = "wss://2ba5-194-93-25-68.ngrok-free.app/ws/"
+
 export const API_BASE_URL = "https://2ba5-194-93-25-68.ngrok-free.app/api/v1/";
 
 const api = axios.create({
