@@ -4,7 +4,7 @@ import { ISelectedDateTime } from "../components/appointment/types";
 
 export const BACKEND_URL = "https://telecure.ru/api/v1";
 
-export const API_BASE_URL = "https://3ca9-194-93-25-68.ngrok-free.app/api/v1/";
+export const API_BASE_URL = "https://2ba5-194-93-25-68.ngrok-free.app/api/v1/";
 
 const api = axios.create({
 	baseURL: API_BASE_URL,

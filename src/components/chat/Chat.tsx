@@ -13,11 +13,13 @@ import { styled } from "@mui/material/styles";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { useParams } from "react-router-dom";
 import { getPatientInfo, getSelectedDoctor, getUser } from "../../utils/storage";
+import { decryptCallId } from "../../utils/decryption";
 
 interface Message {
   text: string;
-  imageUrl?: string;
-  sender: string;
+  image_bytes?: string;
+  receiver: number | string,
+  sender: number | string;
 }
 
 interface User {
@@ -44,13 +46,14 @@ const Chat: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
 
-  const userId = getPatientInfo()?.id; // Replace with the actual user ID of the sender
-  const doctorId = getSelectedDoctor()
+  // const userId = getUser()?.id; // Replace with the actual user ID of the sender
+  // const doctorId = getSelectedDoctor()
+  const {chatId, chatInfo:hash} = useParams()
+  const chatInfo = decryptCallId(hash as string);
 
-  console.log(userId, doctorId);
+  console.log('hash', decryptCallId(hash as string))
   
 
-  const {chatId} = useParams()
 
   const userReceiver: User = {
     userId: "USER_ID_2", // Replace with the actual user ID of the receiver
@@ -61,12 +64,14 @@ const Chat: React.FC = () => {
   useEffect(() => {
     // Connect to the WebSocket server
     const socket = new WebSocket(
-      `wss://3ca9-194-93-25-68.ngrok-free.app/ws/chat/${chatId}/${userId}`
+      `wss://3ca9-194-93-25-68.ngrok-free.app/ws/chat/${chatId}/`
     );
 
     // Listen for incoming messages from the server
     socket.addEventListener("message", (event) => {
       const message: Message = JSON.parse(event.data);
+      console.log('OnMessage', message);
+      
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -77,7 +82,7 @@ const Chat: React.FC = () => {
     return () => {
       socket.close();
     };
-  }, [userId]);
+  }, []);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -90,7 +95,10 @@ const Chat: React.FC = () => {
     if (ws) {
       const message: Message = {
         text: newMessage,
-        sender: userId,
+        sender:
+          chatInfo.type === "patient" ? chatInfo.patient : chatInfo.doctor,
+        receiver:
+          chatInfo.type === "patient" ? chatInfo.doctor : chatInfo.patient,
       };
       ws.send(JSON.stringify(message));
 
@@ -123,9 +131,9 @@ const Chat: React.FC = () => {
           {messages.map((message, index) => (
             <div key={index}>
               {`${message.sender}: ${message.text}`}
-              {message.imageUrl && (
+              {message.image_bytes && (
                 <img
-                  src={message.imageUrl}
+                  src={message.image_bytes}
                   alt="Uploaded"
                   style={{ maxWidth: "100%", marginTop: "5px" }}
                 />
