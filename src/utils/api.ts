@@ -1,15 +1,16 @@
 import axios, { AxiosResponse } from "axios";
 import { IDoctor } from "../components/doctor/types";
 import { ISelectedDateTime } from "../components/appointment/types";
+import { Message } from "../components/chat/Chat";
 
 export const BACKEND_URL = "https://telecure.ru/api/v1";
 
-export const WEBSOCKET_API = "wss://2ba5-194-93-25-68.ngrok-free.app/ws/"
+export const WEBSOCKET_API = "wss://telecure.ru/ws/"
 
-export const API_BASE_URL = "https://2ba5-194-93-25-68.ngrok-free.app/api/v1/";
+export const API_BASE_URL = "https://9521-194-93-25-68.ngrok-free.app/api/v1/";
 
 const api = axios.create({
-	baseURL: API_BASE_URL,
+	baseURL: BACKEND_URL,
 });
 
 export interface IPatient {
@@ -26,6 +27,16 @@ interface IPatientResult {
 	doctor: number;
 	result_text: string;
 }
+
+export const fetchChatHistory = async (id:string) => {
+  try {
+    const response = await api.get<Message[]>(`chat_history/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching chat history:', error);
+    throw error;
+  }
+};
 
 export const getDoctors = async (): Promise<{ doctors: IDoctor[], directions: string[] }> => {
 	const response = await api.get("/doctor");

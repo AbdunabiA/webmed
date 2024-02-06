@@ -12,15 +12,35 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { useParams } from "react-router-dom";
-import { getPatientInfo, getSelectedDoctor, getUser } from "../../utils/storage";
+import {
+  getPatientInfo,
+  getSelectedDoctor,
+  getUser,
+} from "../../utils/storage";
 import { decryptCallId } from "../../utils/decryption";
-import { WEBSOCKET_API } from "../../utils/api";
+import { WEBSOCKET_API, fetchChatHistory } from "../../utils/api";
+import { position } from "html2canvas/dist/types/css/property-descriptors/position";
 
-interface Message {
-  text: string;
-  image_bytes?: string;
-  receiver: number | string,
-  sender: number | string;
+export interface Message {
+  message: string;
+  image_bytes?: string | null;
+  receiver: {
+    id: number;
+    full_name: string;
+  };
+  sender: {
+    id: number;
+    full_name: string;
+  };
+  type: string;
+}
+
+interface Messag {
+  message: string;
+  image_bytes?: string | null;
+  receiver: number | string;
+  sender: string | number;
+  type: string;
 }
 
 interface User {
@@ -47,14 +67,55 @@ const Chat: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
 
-  // const userId = getUser()?.id; // Replace with the actual user ID of the sender
-  // const doctorId = getSelectedDoctor()
-  const {chatId, chatInfo:hash} = useParams()
+  const { chatId, chatInfo: hash } = useParams();
   const chatInfo = decryptCallId(hash as string);
 
-  console.log('hash', decryptCallId(hash as string))
-  
+  useEffect(() => {
+    const getChatHistory = async () => {
+      try {
+        const chatHistory = await fetchChatHistory(chatId as string);
+        // console.log("History", chatHistory);
 
+        if (chatHistory) setMessages(chatHistory);
+      } catch (error) {
+        console.error("Failed to fetch chat history:", error);
+        // Handle error appropriately, maybe set an error state
+      }
+    };
+
+    getChatHistory();
+  }, []);
+
+  const sendFile = (file: File) => {
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+      if (event.target?.result && ws) {
+        const base64String = event.target.result as string;
+        console.log("Image", event.target.result);
+
+        const data: Messag = {
+          message: newMessage,
+          sender:
+            chatInfo.type === "patient"
+              ? chatInfo.patient.id
+              : chatInfo.doctor.id,
+          receiver:
+            chatInfo.type === "patient"
+              ? chatInfo.doctor.id
+              : chatInfo.patient.id,
+          type: chatInfo.type,
+          image_bytes: base64String,
+        };
+
+        // Now send this data object over the WebSocket
+        ws.send(JSON.stringify(data));
+      }
+    };
+
+    reader.readAsDataURL(file);
+  };
+  console.log("messages", messages);
 
   const userReceiver: User = {
     userId: "USER_ID_2", // Replace with the actual user ID of the receiver
@@ -64,15 +125,13 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     // Connect to the WebSocket server
-    const socket = new WebSocket(
-      `${WEBSOCKET_API}chat/${chatId}/`
-    );
+    const socket = new WebSocket(`${WEBSOCKET_API}chat/${chatId}/`);
 
     // Listen for incoming messages from the server
     socket.addEventListener("message", (event) => {
       const message: Message = JSON.parse(event.data);
-      console.log('OnMessage', message);
-      
+      // console.log('OnMessage', message);
+
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -87,23 +146,29 @@ const Chat: React.FC = () => {
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
+      sendFile(e.target.files[0]);
+      setImage(null);
     }
   };
 
   const handleSendMessage = () => {
     // Send the message and image to the server
-    if (ws) {
-      const message: Message = {
-        text: newMessage,
+    if (ws && newMessage.trim()) {
+      const message: Messag = {
+        message: newMessage,
         sender:
-          chatInfo.type === "patient" ? chatInfo.patient : chatInfo.doctor,
+          chatInfo.type === "patient"
+            ? chatInfo.patient.id
+            : chatInfo.doctor.id,
         receiver:
-          chatInfo.type === "patient" ? chatInfo.doctor : chatInfo.patient,
+          chatInfo.type === "patient"
+            ? chatInfo.doctor.id
+            : chatInfo.patient.id,
+        type: chatInfo.type,
       };
       ws.send(JSON.stringify(message));
 
-      setMessages((prevMessages) => [...prevMessages, message]); // Display the sent message immediately
+      // setMessages((prevMessages) => [...prevMessages, message]); // Display the sent message immediately
 
       setNewMessage("");
       setImage(null);
@@ -121,22 +186,39 @@ const Chat: React.FC = () => {
           }}
         >
           <Avatar
-            alt={userReceiver.userName}
+            alt={
+              chatInfo.type === "patient"
+                ? chatInfo.doctor.name
+                : chatInfo.patient.name
+            }
             src={userReceiver.avatarUrl}
             style={{ marginRight: "10px" }}
           />
-          <Typography variant="h6">{userReceiver.userName}</Typography>
+          <Typography variant="h6">
+            {chatInfo.type === "patient"
+              ? chatInfo.doctor.name
+              : chatInfo.patient.name}
+          </Typography>
         </div>
 
-        <div>
-          {messages.map((message, index) => (
-            <div key={index}>
-              {`${message.sender}: ${message.text}`}
-              {message.image_bytes && (
+        <div style={{ position: "relative", maxHeight: "90vh" }}>
+          {messages?.map((message, index) => (
+            <div
+              key={index}
+              style={
+                chatInfo.type === message.type
+                  ? { textAlign: "right" }
+                  : { textAlign: "left" }
+              }
+            >
+              {`${message?.sender?.full_name[0].toUpperCase()}: ${
+                message?.message
+              }`}
+              {message?.image_bytes && (
                 <img
-                  src={message.image_bytes}
+                  src={"https://telecure.ru" + message.image_bytes}
                   alt="Uploaded"
-                  style={{ maxWidth: "100%", marginTop: "5px" }}
+                  style={{ maxWidth: "50%", marginTop: "5px" }}
                 />
               )}
             </div>
