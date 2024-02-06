@@ -8,7 +8,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { useParams } from "react-router-dom";
@@ -18,7 +18,7 @@ import {
   getUser,
 } from "../../utils/storage";
 import { decryptCallId } from "../../utils/decryption";
-import { WEBSOCKET_API, fetchChatHistory } from "../../utils/api";
+import { BACKEND_URL, WEBSOCKET_API, fetchChatHistory } from "../../utils/api";
 import { position } from "html2canvas/dist/types/css/property-descriptors/position";
 
 export interface Message {
@@ -62,13 +62,80 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const Chat: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    // {
+    //   message:
+    //     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Id ab dolores excepturi temporibus beatae tempore molestias voluptates omnis similique tenetur. Sit a commodi error culpa. Nobis amet tempore ullam atque, nemo consequatur delectus corporis saepe dolorem consectetur, incidunt assumenda dolor!",
+    //   image_bytes: null,
+    //   receiver: {
+    //     id: 2,
+    //     full_name: "Abdunabi",
+    //   },
+    //   sender: {
+    //     id: 2,
+    //     full_name: "Bexruz",
+    //   },
+    //   type: "patient",
+    // },
+    // {
+    //   message:
+    //     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Id ab dolores excepturi temporibus beatae tempore molestias voluptates omnis similique tenetur. Sit a commodi error culpa. Nobis amet tempore ullam atque, nemo consequatur delectus corporis saepe dolorem consectetur, incidunt assumenda dolor!",
+    //   image_bytes: null,
+    //   receiver: {
+    //     id: 2,
+    //     full_name: "Abdunabi",
+    //   },
+    //   sender: {
+    //     id: 2,
+    //     full_name: "Bexruz",
+    //   },
+    //   type: "doctor",
+    // },
+    // {
+    //   message:
+    //     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Id ab dolores excepturi temporibus beatae tempore molestias voluptates omnis similique tenetur. Sit a commodi error culpa. Nobis amet tempore ullam atque, nemo consequatur delectus corporis saepe dolorem consectetur, incidunt assumenda dolor!",
+    //   image_bytes: null,
+    //   receiver: {
+    //     id: 2,
+    //     full_name: "Abdunabi",
+    //   },
+    //   sender: {
+    //     id: 2,
+    //     full_name: "Bexruz",
+    //   },
+    //   type: "patient",
+    // },
+    // {
+    //   message:
+    //     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Id ab dolores excepturi temporibus beatae tempore molestias voluptates omnis similique tenetur. Sit a commodi error culpa. Nobis amet tempore ullam atque, nemo consequatur delectus corporis saepe dolorem consectetur, incidunt assumenda dolor!",
+    //   image_bytes: null,
+    //   receiver: {
+    //     id: 2,
+    //     full_name: "Abdunabi",
+    //   },
+    //   sender: {
+    //     id: 2,
+    //     full_name: "Bexruz",
+    //   },
+    //   type: "doctor",
+    // },
+  ]);
   const [newMessage, setNewMessage] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { chatId, chatInfo: hash } = useParams();
   const chatInfo = decryptCallId(hash as string);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView();
+    // { behavior: "smooth" }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     const getChatHistory = async () => {
@@ -115,7 +182,7 @@ const Chat: React.FC = () => {
 
     reader.readAsDataURL(file);
   };
-  console.log("messages", messages);
+  // console.log("messages", messages);
 
   const userReceiver: User = {
     userId: "USER_ID_2", // Replace with the actual user ID of the receiver
@@ -177,91 +244,118 @@ const Chat: React.FC = () => {
 
   return (
     <Container component="main" maxWidth="sm">
-      <Paper elevation={3} style={{ padding: "20px", margin: "20px 0" }}>
-        <div
-          style={{
-            marginBottom: "20px",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Avatar
-            alt={
-              chatInfo.type === "patient"
-                ? chatInfo.doctor.name
-                : chatInfo.patient.name
-            }
-            src={userReceiver.avatarUrl}
-            style={{ marginRight: "10px" }}
-          />
-          <Typography variant="h6">
-            {chatInfo.type === "patient"
-              ? chatInfo.doctor.name
-              : chatInfo.patient.name}
-          </Typography>
-        </div>
-
-        <div style={{ position: "relative", maxHeight: "90vh" }}>
-          {messages?.map((message, index) => (
-            <div
-              key={index}
-              style={
-                chatInfo.type === message.type
-                  ? { textAlign: "right" }
-                  : { textAlign: "left" }
+      <div style={{ height: "95vh" }}>
+        <Paper elevation={3} style={{ padding: "20px", margin: "20px 0" }}>
+          <div
+            style={{
+              marginBottom: "20px",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Avatar
+              alt={
+                chatInfo.type === "patient"
+                  ? chatInfo.doctor.name
+                  : chatInfo.patient.name
               }
-            >
-              {`${message?.sender?.full_name[0].toUpperCase()}: ${
-                message?.message
-              }`}
-              {message?.image_bytes && (
-                <img
-                  src={"https://telecure.ru" + message.image_bytes}
-                  alt="Uploaded"
-                  style={{ maxWidth: "50%", marginTop: "5px" }}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-
-        <Grid container spacing={2} style={{ marginTop: "20px" }}>
-          <Grid item xs={12} sx={{ display: "flex" }}>
-            <Button
-              component="label"
-              color="inherit"
-              variant="text"
-              sx={{ padding: 0, margin: 0 }}
-              startIcon={<AttachFileIcon />}
-            >
-              <VisuallyHiddenInput
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </Button>
-            <Input
-              fullWidth
-              placeholder="Type message..."
-              id="message"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              src={userReceiver.avatarUrl}
+              style={{ marginRight: "10px" }}
             />
+            <Typography variant="h6">
+              {chatInfo.type === "patient"
+                ? chatInfo.doctor.name
+                : chatInfo.patient.name}
+            </Typography>
+          </div>
+
+          <div style={{ overflowY: "auto", height: "100%", maxHeight: "66vh" }}>
+            {messages?.map((message, index) => (
+              <div
+                key={index}
+                style={
+                  chatInfo.type === message.type
+                    ? {
+                        display: "flex",
+                        alignItems: "end",
+                        justifyContent: "end",
+                      }
+                    : {
+                        display: "flex",
+                        alignItems: "end",
+                        justifyContent: "start",
+                      }
+                }
+              >
+                {chatInfo.type !== message.type ? (
+                  <Avatar style={{ marginRight: "5px" }}>
+                    {message?.sender?.full_name[0]}
+                  </Avatar>
+                ) : null}
+                <p
+                  style={{
+                    maxWidth: "70%",
+                    padding: "5px 10px",
+                    borderRadius: "15px",
+                    backgroundColor: "#2671bd",
+                  }}
+                >{` ${message?.message}`}</p>
+
+                {message?.image_bytes && (
+                  <img
+                    src={BACKEND_URL + message.image_bytes}
+                    alt="Uploaded"
+                    style={{ maxWidth: "50%", marginTop: "5px" }}
+                  />
+                )}
+                {chatInfo.type === message.type ? (
+                  <Avatar style={{ marginLeft: "5px" }}>
+                    {message?.receiver?.full_name[0]}
+                  </Avatar>
+                ) : null}
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+
+          <Grid container spacing={2} style={{ marginTop: "20px" }}>
+            <Grid item xs={12} sx={{ display: "flex" }}>
+              <Button
+                component="label"
+                color="inherit"
+                variant="text"
+                sx={{ padding: 0, margin: 0 }}
+                startIcon={<AttachFileIcon />}
+              >
+                <VisuallyHiddenInput
+                  type="file"
+                  id="imageInput"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+              </Button>
+              <Input
+                fullWidth
+                placeholder="Type message..."
+                id="message"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                type="button"
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={handleSendMessage}
+              >
+                Send
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={handleSendMessage}
-            >
-              Send
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
+      </div>
     </Container>
   );
 };
