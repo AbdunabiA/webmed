@@ -241,6 +241,8 @@ const Chat: React.FC = () => {
       setImage(null);
     }
   };
+  console.log('MESSAGES', messages);
+  
 
   return (
     <Container component="main" maxWidth="sm">
