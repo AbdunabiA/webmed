@@ -292,14 +292,18 @@ const Chat: React.FC = () => {
                     {message?.sender?.full_name[0]}
                   </Avatar>
                 ) : null}
-                <p
+                {
+                  message?.message ? 
+                  <p
                   style={{
                     maxWidth: "70%",
                     padding: "5px 10px",
                     borderRadius: "15px",
                     backgroundColor: "#2671bd",
                   }}
-                >{` ${message?.message}`}</p>
+                >{` ${message?.message}`}</p> : null
+                }
+                
 
                 {message?.image_bytes && (
                   <img
