@@ -303,7 +303,7 @@ const Chat: React.FC = () => {
 
                 {message?.image_bytes && (
                   <img
-                    src={BACKEND_URL + message.image_bytes}
+                    src={"https://telecure.ru" + message.image_bytes}
                     alt="Uploaded"
                     style={{ maxWidth: "50%", marginTop: "5px" }}
                   />

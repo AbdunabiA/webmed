@@ -625,7 +625,7 @@ const Meeting: React.FC = () => {
               ></source>
             </audio>
             <img
-              src={BACKEND_URL + doctor?.avatar}
+              src={"https://telecure.ru" + doctor?.avatar}
               alt="Doctor"
               style={{
                 width: "150px",

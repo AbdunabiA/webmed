@@ -34,51 +34,51 @@ const HalfRating: React.FC = () => {
 		}
     }
 	return (
-		<div style={{ width: "100%" }}>
-			<Header title="Оцените это" />
-			<Divider />
-			<Stack
-				sx={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-					marginTop: "80px",
-				}}
-			>
-				<Box
-					sx={{
-						display: "flex",
-						flexDirection: "column",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<img
-						src={BACKEND_URL + state?.doctor?.avatar}
-						alt="Doctor"
-						style={{
-							width: "180px",
-							height: "180px",
-							borderRadius: "50%",
-						}}
-					/>
-					<Typography variant="h6" sx={{ marginTop: "5px" }}>{state?.doctor?.full_name}</Typography>
-				</Box>
-				<br />
-                <br />
-				<Rating
-					name="half-rating"
-					value={value}
-					onChange={handleValue}
-					precision={0.5}
-					style={{ fontSize: "45px" }}
-				/>
-				{value > 0.0 && (
-					<MainButton text="Тугатиш" onClick={handleFinish} />
-				)}
-			</Stack>
-		</div>
-	);
+    <div style={{ width: "100%" }}>
+      <Header title="Оцените это" />
+      <Divider />
+      <Stack
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: "80px",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <img
+            src={"https://telecure.ru" + state?.doctor?.avatar}
+            alt="Doctor"
+            style={{
+              width: "180px",
+              height: "180px",
+              borderRadius: "50%",
+            }}
+          />
+          <Typography variant="h6" sx={{ marginTop: "5px" }}>
+            {state?.doctor?.full_name}
+          </Typography>
+        </Box>
+        <br />
+        <br />
+        <Rating
+          name="half-rating"
+          value={value}
+          onChange={handleValue}
+          precision={0.5}
+          style={{ fontSize: "45px" }}
+        />
+        {value > 0.0 && <MainButton text="Тугатиш" onClick={handleFinish} />}
+      </Stack>
+    </div>
+  );
 }
 
 export default HalfRating;
