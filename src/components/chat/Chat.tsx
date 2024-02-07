@@ -241,7 +241,7 @@ const Chat: React.FC = () => {
       setImage(null);
     }
   };
-  // console.log('MESSAGES', messages);
+  console.log('MESSAGES', messages);
   
 
   return (
