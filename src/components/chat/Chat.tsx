@@ -241,7 +241,7 @@ const Chat: React.FC = () => {
       setImage(null);
     }
   };
-  console.log('MESSAGES', messages);
+  // console.log('MESSAGES', messages);
   
 
   return (
@@ -291,7 +291,7 @@ const Chat: React.FC = () => {
               >
                 {chatInfo.type !== message.type ? (
                   <Avatar style={{ marginRight: "5px" }}>
-                    {message?.sender?.full_name[0]}
+                    {message?.sender?.full_name[0].toUpperCase()}
                   </Avatar>
                 ) : null}
                 {
@@ -316,7 +316,7 @@ const Chat: React.FC = () => {
                 )}
                 {chatInfo.type === message.type ? (
                   <Avatar style={{ marginLeft: "5px" }}>
-                    {message?.receiver?.full_name[0]}
+                    {message?.receiver?.full_name[0].toUpperCase()}
                   </Avatar>
                 ) : null}
               </div>
