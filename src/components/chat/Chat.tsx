@@ -243,7 +243,7 @@ const Chat: React.FC = () => {
             open={modal.isOpen}
             onClose={() => setModal({ isOpen: false, message: null })}
           >
-            <>
+            <div style={{display:'flex', flexDirection:"column", gap:"10px"}}>
               <div style={{ display: "flex", justifyContent: "end" }}>
                 <h1
                   onClick={() => setModal({ isOpen: false, message: null })}
@@ -259,11 +259,11 @@ const Chat: React.FC = () => {
                 </h1>
               </div>
               <img
-                style={{ width: "90%" }}
+                style={{ width: "90%", maxHeight:'80%' }}
                 src={"https://telecure.ru" + modal?.message?.image_bytes}
                 alt=""
               />
-            </>
+            </div>
           </Modal>
           <div style={{ overflowY: "auto", height: "100%", maxHeight: "66vh" }}>
             {messages?.map((message, index) => (
