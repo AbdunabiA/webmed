@@ -316,7 +316,7 @@ const Chat: React.FC = () => {
                 )}
                 {chatInfo.type === message.type ? (
                   <Avatar style={{ marginLeft: "5px" }}>
-                    {message?.receiver?.full_name[0].toUpperCase()}
+                    {message?.sender?.full_name[0].toUpperCase()}
                   </Avatar>
                 ) : null}
               </div>
