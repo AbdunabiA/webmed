@@ -258,7 +258,7 @@ const Chat: React.FC = () => {
                       alt="Uploaded"
                       style={{ maxWidth: "50%", marginTop: "5px" }}
                     />
-                    <Modal style={{maxWidth:"90vw"}}  open={modal} onClose={() => setModal(false)}>
+                    <Modal style={{maxWidth:"90vw", display:"flex", alignItems:"center", justifyContent:"center"}}  open={modal} onClose={() => setModal(false)}>
                       <img style={{width:"100%"}} src={"https://telecure.ru" + message.image_bytes} alt="" />
                     </Modal>
                   </>
