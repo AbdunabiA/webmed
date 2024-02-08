@@ -85,7 +85,7 @@ const Chat: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [modal, setModal] = useState<Modal>({isOpen:false, message:null});
+  const [modal, setModal] = useState<Modal>({ isOpen: false, message: null });
 
   const { chatId, chatInfo: hash } = useParams();
   const chatInfo = decryptCallId(hash as string);
@@ -243,19 +243,27 @@ const Chat: React.FC = () => {
             open={modal.isOpen}
             onClose={() => setModal({ isOpen: false, message: null })}
           >
-            <div style={{ display: "flex", justifyContent: "end" }}>
-              <h1
-                onClick={() => setModal({ isOpen: false, message: null })}
-                style={{ color: "white", fontSize: "30px", backgroundColor:"black", borderRadius:"10px", padding:"5px" }}
-              >
-                X
-              </h1>
-            </div>
-            <img
-              style={{ width: "90%" }}
-              src={"https://telecure.ru" + modal?.message?.image_bytes}
-              alt=""
-            />
+            <>
+              <div style={{ display: "flex", justifyContent: "end" }}>
+                <h1
+                  onClick={() => setModal({ isOpen: false, message: null })}
+                  style={{
+                    color: "white",
+                    fontSize: "30px",
+                    backgroundColor: "black",
+                    borderRadius: "10px",
+                    padding: "5px",
+                  }}
+                >
+                  X
+                </h1>
+              </div>
+              <img
+                style={{ width: "90%" }}
+                src={"https://telecure.ru" + modal?.message?.image_bytes}
+                alt=""
+              />
+            </>
           </Modal>
           <div style={{ overflowY: "auto", height: "100%", maxHeight: "66vh" }}>
             {messages?.map((message, index) => (
