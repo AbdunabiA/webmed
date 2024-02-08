@@ -3,7 +3,6 @@ import {
   Button,
   Container,
   Grid,
-  FormControl,
   Input,
   Paper,
   Typography,
@@ -348,7 +347,7 @@ const Chat: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControl onSubmit={handleSendMessage}>
+              <form onSubmit={handleSendMessage}>
                 <Button
                   type="submit"
                   fullWidth
@@ -357,7 +356,7 @@ const Chat: React.FC = () => {
                 >
                   Send
                 </Button>
-              </FormControl>
+              </form>
             </Grid>
           </Grid>
         </Paper>
