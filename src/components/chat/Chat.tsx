@@ -241,8 +241,16 @@ const Chat: React.FC = () => {
               justifyContent: "center",
             }}
             open={modal.isOpen}
-            onClose={() => setModal({isOpen: false, message:null})}
+            onClose={() => setModal({ isOpen: false, message: null })}
           >
+            <div style={{ display: "flex", justifyContent: "end" }}>
+              <h1
+                onClick={() => setModal({ isOpen: false, message: null })}
+                style={{ color: "white", fontSize: "30px", backgroundColor:"black", borderRadius:"10px", padding:"5px" }}
+              >
+                X
+              </h1>
+            </div>
             <img
               style={{ width: "90%" }}
               src={"https://telecure.ru" + modal?.message?.image_bytes}
@@ -286,7 +294,7 @@ const Chat: React.FC = () => {
                 {message?.image_bytes && (
                   <>
                     <img
-                      onClick={() => setModal({isOpen:true,message})}
+                      onClick={() => setModal({ isOpen: true, message })}
                       src={"https://telecure.ru" + message.image_bytes}
                       alt="Uploaded"
                       style={{ maxWidth: "50%", marginTop: "5px" }}
