@@ -5,6 +5,7 @@ import {
   FormControl,
   Grid,
   Input,
+  Modal,
   Paper,
   Typography,
 } from "@mui/material";
@@ -62,68 +63,12 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const Chat: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    // {
-    //   message:
-    //     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Id ab dolores excepturi temporibus beatae tempore molestias voluptates omnis similique tenetur. Sit a commodi error culpa. Nobis amet tempore ullam atque, nemo consequatur delectus corporis saepe dolorem consectetur, incidunt assumenda dolor!",
-    //   image_bytes: null,
-    //   receiver: {
-    //     id: 2,
-    //     full_name: "Abdunabi",
-    //   },
-    //   sender: {
-    //     id: 2,
-    //     full_name: "Bexruz",
-    //   },
-    //   type: "patient",
-    // },
-    // {
-    //   message:
-    //     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Id ab dolores excepturi temporibus beatae tempore molestias voluptates omnis similique tenetur. Sit a commodi error culpa. Nobis amet tempore ullam atque, nemo consequatur delectus corporis saepe dolorem consectetur, incidunt assumenda dolor!",
-    //   image_bytes: null,
-    //   receiver: {
-    //     id: 2,
-    //     full_name: "Abdunabi",
-    //   },
-    //   sender: {
-    //     id: 2,
-    //     full_name: "Bexruz",
-    //   },
-    //   type: "doctor",
-    // },
-    // {
-    //   message:
-    //     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Id ab dolores excepturi temporibus beatae tempore molestias voluptates omnis similique tenetur. Sit a commodi error culpa. Nobis amet tempore ullam atque, nemo consequatur delectus corporis saepe dolorem consectetur, incidunt assumenda dolor!",
-    //   image_bytes: null,
-    //   receiver: {
-    //     id: 2,
-    //     full_name: "Abdunabi",
-    //   },
-    //   sender: {
-    //     id: 2,
-    //     full_name: "Bexruz",
-    //   },
-    //   type: "patient",
-    // },
-    // {
-    //   message:
-    //     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Id ab dolores excepturi temporibus beatae tempore molestias voluptates omnis similique tenetur. Sit a commodi error culpa. Nobis amet tempore ullam atque, nemo consequatur delectus corporis saepe dolorem consectetur, incidunt assumenda dolor!",
-    //   image_bytes: null,
-    //   receiver: {
-    //     id: 2,
-    //     full_name: "Abdunabi",
-    //   },
-    //   sender: {
-    //     id: 2,
-    //     full_name: "Bexruz",
-    //   },
-    //   type: "doctor",
-    // },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [modal, setModal] = useState(false);
 
   const { chatId, chatInfo: hash } = useParams();
   const chatInfo = decryptCallId(hash as string);
@@ -306,11 +251,17 @@ const Chat: React.FC = () => {
                 ) : null}
 
                 {message?.image_bytes && (
-                  <img
-                    src={"https://telecure.ru" + message.image_bytes}
-                    alt="Uploaded"
-                    style={{ maxWidth: "50%", marginTop: "5px" }}
-                  />
+                  <>
+                    <img
+                    onClick={()=>setModal(true)}
+                      src={"https://telecure.ru" + message.image_bytes}
+                      alt="Uploaded"
+                      style={{ maxWidth: "50%", marginTop: "5px" }}
+                    />
+                    <Modal open={modal} onClose={() => setModal(false)}>
+                      <img src="" alt="" />
+                    </Modal>
+                  </>
                 )}
                 {chatInfo.type === message.type ? (
                   <Avatar style={{ marginLeft: "5px" }}>
@@ -322,47 +273,46 @@ const Chat: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-              <form onSubmit={handleSendMessage}>
-          <Grid container spacing={2} style={{ marginTop: "20px" }}>
-            <Grid item xs={12} sx={{ display: "flex" }}>
-              <Button
-                component="label"
-                color="inherit"
-                variant="text"
-                sx={{ padding: 0, margin: 0 }}
-                startIcon={<AttachFileIcon />}
-              >
-                <VisuallyHiddenInput
-                  type="file"
-                  id="imageInput"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-              </Button>
-
-              <Input
-                fullWidth
-                placeholder="Type message..."
-                id="message"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-                <FormControl fullWidth>
-
+          <form onSubmit={handleSendMessage}>
+            <Grid container spacing={2} style={{ marginTop: "20px" }}>
+              <Grid item xs={12} sx={{ display: "flex" }}>
                 <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  >
-                  Send
+                  component="label"
+                  color="inherit"
+                  variant="text"
+                  sx={{ padding: 0, margin: 0 }}
+                  startIcon={<AttachFileIcon />}
+                >
+                  <VisuallyHiddenInput
+                    type="file"
+                    id="imageInput"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
                 </Button>
+
+                <Input
+                  fullWidth
+                  placeholder="Type message..."
+                  id="message"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                  >
+                    Send
+                  </Button>
                 </FormControl>
+              </Grid>
             </Grid>
-          </Grid>
-              </form>
+          </form>
         </Paper>
       </div>
     </Container>
