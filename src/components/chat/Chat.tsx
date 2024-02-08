@@ -3,7 +3,7 @@ import {
   Button,
   Container,
   Grid,
-  IconButton,
+  FormControl,
   Input,
   Paper,
   Typography,
@@ -218,7 +218,8 @@ const Chat: React.FC = () => {
     }
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     // Send the message and image to the server
     if (ws && newMessage.trim()) {
       const message: Messag = {
@@ -241,8 +242,7 @@ const Chat: React.FC = () => {
       setImage(null);
     }
   };
-  console.log('MESSAGES', messages);
-  
+  console.log("MESSAGES", messages);
 
   return (
     <Container component="main" maxWidth="sm">
@@ -294,18 +294,16 @@ const Chat: React.FC = () => {
                     {message?.sender?.full_name[0].toUpperCase()}
                   </Avatar>
                 ) : null}
-                {
-                  message?.message ? 
+                {message?.message ? (
                   <p
-                  style={{
-                    maxWidth: "70%",
-                    padding: "5px 10px",
-                    borderRadius: "15px",
-                    backgroundColor: "#2671bd",
-                  }}
-                >{` ${message?.message}`}</p> : null
-                }
-                
+                    style={{
+                      maxWidth: "70%",
+                      padding: "5px 10px",
+                      borderRadius: "15px",
+                      backgroundColor: "#2671bd",
+                    }}
+                  >{` ${message?.message}`}</p>
+                ) : null}
 
                 {message?.image_bytes && (
                   <img
@@ -340,6 +338,7 @@ const Chat: React.FC = () => {
                   onChange={handleImageChange}
                 />
               </Button>
+
               <Input
                 fullWidth
                 placeholder="Type message..."
@@ -349,15 +348,16 @@ const Chat: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Button
-                type="button"
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={handleSendMessage}
-              >
-                Send
-              </Button>
+              <FormControl onSubmit={handleSendMessage}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                >
+                  Send
+                </Button>
+              </FormControl>
             </Grid>
           </Grid>
         </Paper>
