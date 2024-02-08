@@ -62,13 +62,30 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
+interface Modal {
+  isOpen: boolean;
+  message: {
+    message: string | null;
+    image_bytes?: string | null;
+    receiver: {
+      id: number;
+      full_name: string;
+    };
+    sender: {
+      id: number;
+      full_name: string;
+    };
+    type: string;
+  } | null;
+}
+
 const Chat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState<Modal>({isOpen:false, message:null});
 
   const { chatId, chatInfo: hash } = useParams();
   const chatInfo = decryptCallId(hash as string);
@@ -215,7 +232,23 @@ const Chat: React.FC = () => {
                 : chatInfo.patient.name}
             </Typography>
           </div>
-
+          <Modal
+            style={{
+              width: "100vw",
+              height: "100vh",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            open={modal.isOpen}
+            onClose={() => setModal({isOpen: false, message:null})}
+          >
+            <img
+              style={{ width: "90%" }}
+              src={"https://telecure.ru" + modal?.message?.image_bytes}
+              alt=""
+            />
+          </Modal>
           <div style={{ overflowY: "auto", height: "100%", maxHeight: "66vh" }}>
             {messages?.map((message, index) => (
               <div
@@ -253,14 +286,11 @@ const Chat: React.FC = () => {
                 {message?.image_bytes && (
                   <>
                     <img
-                    onClick={()=>setModal(true)}
+                      onClick={() => setModal({isOpen:true,message})}
                       src={"https://telecure.ru" + message.image_bytes}
                       alt="Uploaded"
                       style={{ maxWidth: "50%", marginTop: "5px" }}
                     />
-                    <Modal style={{width:"100vw", height:"100vh", display:"flex", alignItems:"center", justifyContent:"center"}}  open={modal} onClose={() => setModal(false)}>
-                      <img style={{width:"90%"}} src={"https://telecure.ru" + message.image_bytes} alt="" />
-                    </Modal>
                   </>
                 )}
                 {chatInfo.type === message.type ? (
