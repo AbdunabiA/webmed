@@ -259,7 +259,7 @@ const Chat: React.FC = () => {
                       style={{ maxWidth: "50%", marginTop: "5px" }}
                     />
                     <Modal open={modal} onClose={() => setModal(false)}>
-                      <img src="" alt="" />
+                      <img src={"https://telecure.ru" + message.image_bytes} alt="" />
                     </Modal>
                   </>
                 )}
