@@ -34,6 +34,7 @@ export interface Message {
     full_name: string;
   };
   type: string;
+  status?: string;
 }
 
 interface Messag {
@@ -42,6 +43,7 @@ interface Messag {
   receiver: number | string;
   sender: string | number;
   type: string;
+  status?: string;
 }
 
 interface User {
@@ -65,6 +67,7 @@ const VisuallyHiddenInput = styled("input")({
 interface Modal {
   isOpen: boolean;
   message: {
+    status?: string;
     message: string | null;
     image_bytes?: string | null;
     receiver: {
@@ -266,9 +269,21 @@ const Chat: React.FC = () => {
                   X
                 </h1>
               </div>
-              <div style={{display:"flex", alignItems:"center", justifyContent:"center", width:"100%", height:"100%"}}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
                 <img
-                  style={{ width: "90%", maxHeight: "90%" }}
+                  style={{
+                    width: "90%",
+                    maxHeight: "90%",
+                    filter: modal?.message?.status === "close" ? "blur(20px)" : "none",
+                  }}
                   src={"https://telecure.ru" + modal?.message?.image_bytes}
                   alt=""
                 />
@@ -315,7 +330,12 @@ const Chat: React.FC = () => {
                       onClick={() => setModal({ isOpen: true, message })}
                       src={"https://telecure.ru" + message.image_bytes}
                       alt="Uploaded"
-                      style={{ maxWidth: "50%", marginTop: "5px" }}
+                      style={{
+                        maxWidth: "50%",
+                        marginTop: "5px",
+                        filter:
+                          message.status === "close" ? "blur(20px)" : "none",
+                      }}
                     />
                   </>
                 )}
