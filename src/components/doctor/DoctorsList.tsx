@@ -27,13 +27,13 @@ const DoctorsList = () => {
       user_id: getUser().id,
     },
   };
-  const selectedDocto = appointmentData.selectedDocto as IDoctor;
+//   const selectedDocto = appointmentData.selectedDocto as IDoctor;
   const patient = appointmentData.patient as IAppointment;
   const user_id = appointmentData.user_id;
   
 
   const handleConfirm = async () => {
-	console.log(selectedDocto, patient, user_id);
+	console.log( patient, user_id);
 	
     try {
       const response = await makeAppointment({
@@ -42,7 +42,7 @@ const DoctorsList = () => {
         phone_number: patient.phoneNumber,
         additional_information: patient.additionalInfo,
         // conference_date: selectedDateTime,
-        doctor_id: selectedDocto.id.toString(),
+        doctor_id: selectedDoctor?.id.toString(),
       });
       console.log(response);
       navigate("/payment", {

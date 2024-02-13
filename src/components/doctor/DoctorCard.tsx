@@ -23,7 +23,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
   onSelect,
   isSelected,
 }) => {
-  console.log(card);
+  // console.log(card);
 
   return (
     <Box
