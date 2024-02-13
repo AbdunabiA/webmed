@@ -30,8 +30,11 @@ const DoctorsList = () => {
   const selectedDocto = appointmentData.selectedDocto as IDoctor;
   const patient = appointmentData.patient as IAppointment;
   const user_id = appointmentData.user_id;
+  
 
   const handleConfirm = async () => {
+	console.log(selectedDocto, patient, user_id);
+	
     try {
       const response = await makeAppointment({
         user: user_id,
