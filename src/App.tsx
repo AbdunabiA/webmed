@@ -126,8 +126,8 @@ function App() {
             <Route path="/doctor/:id/pick-time" element={<DateTimePicker />} />
             <Route path="/get-tested" element={<GetTested />} />
             <Route path="/clinic/:id" element={<ClinicsList />} />
-            <Route path="/appointment" element={<AppointmentPage />} />
-            <Route path="/summary" element={<Summary />} />
+            {/* <Route path="/appointment" element={<AppointmentPage />} /> */}
+            {/* <Route path="/summary" element={<Summary />} /> */}
             <Route path="/patient-result" element={<PatientResult />} />
             <Route path="/success" element={<SuccessfulPage />} />
             <Route path="/rating" element={<HalfRating />} />

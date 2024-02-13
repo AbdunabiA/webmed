@@ -19,7 +19,7 @@ export interface IPatient {
 	phone_number: string;
 	additional_information: string;
 	doctor_id: string;
-	conference_date: ISelectedDateTime;
+	// conference_date: ISelectedDateTime;
 }
 
 interface IPatientResult {

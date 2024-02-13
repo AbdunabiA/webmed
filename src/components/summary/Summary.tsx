@@ -44,7 +44,7 @@ const Summary = () => {
 				full_name: patient.name + " " + patient.surname,
 				phone_number: patient.phoneNumber,
 				additional_information: patient.additionalInfo,
-				conference_date: selectedDateTime,
+				// conference_date: selectedDateTime,
 				doctor_id: selectedDoctor.id.toString(),
 			});
 			console.log(response);
