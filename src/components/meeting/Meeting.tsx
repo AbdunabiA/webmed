@@ -19,7 +19,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import firebase from "firebase/app";
 import "firebase/firestore";
-import { decryptCallId } from "../../utils/decryption";
+import { decryptCallId, decryptVideoCallId } from "../../utils/decryption";
 import { tgSecondaryBgColor } from "../../utils/colors";
 import "./style.css";
 import { IDoctor } from "../doctor/types";
@@ -113,7 +113,7 @@ const Meeting: React.FC = () => {
   const [bufferData, setBufferData] = useState<{local: any, remote: any}>();
 
   const { callId, callInfo } = useParams();
-  const callDetails = decryptCallId(String(callInfo));
+  const callDetails = decryptVideoCallId(String(callInfo));
   console.log('calldetails',callDetails);
   
   const isPatient = callDetails.type === "patient";

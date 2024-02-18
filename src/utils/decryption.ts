@@ -200,7 +200,19 @@ function decodeBase64(encodedText: string | null) {
 }
 
 
-export function decryptCallId(callId: string): {patient: {id:number, name:string} | number, doctor: {id:number, name:string} | number, type: 'doctor' | 'patient'} {
+export function decryptCallId(callId: string): {patient: {id:number, name:string}, doctor: {id:number, name:string}, type: 'doctor' | 'patient'} {
+    let cipherText = decodeBase64(callId);
+	let plainText = "";
+	for (let i = 0; i < cipherText.length; i++) {
+		const letter = cipherText[i];
+		const index = key.indexOf(letter);
+		plainText += chars[index];
+	}
+    let correctedPlainText = plainText.replace(/'/g, '"');
+	return JSON.parse(correctedPlainText);
+}
+
+export function decryptVideoCallId(callId: string): {patient: number, doctor: number, type: 'doctor' | 'patient'} {
     let cipherText = decodeBase64(callId);
 	let plainText = "";
 	for (let i = 0; i < cipherText.length; i++) {
