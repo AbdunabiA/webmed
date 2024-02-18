@@ -43,7 +43,7 @@ export const getDoctors = async (): Promise<{ doctors: IDoctor[], directions: st
 	return response.data;
 };
 
-export const getDoctor = async (id: number): Promise<IDoctor> => {
+export const getDoctor = async (id: number | {}): Promise<IDoctor> => {
 	const response = await api.get(`/doctor_info/?doctor_id=${id}`);
 	return response.data.doctors;
 };
@@ -60,7 +60,7 @@ export const getDoctorsWorkTime = async (doctor: number, user: number, month: nu
 	return response.data;
 }
 
-export const getPatient = async (patient_id: number): Promise<IPatient> => {
+export const getPatient = async (patient_id: number | {}): Promise<IPatient> => {
 	const response = await api.get("/single_patient/", {
 		params: {
 			patient_id,

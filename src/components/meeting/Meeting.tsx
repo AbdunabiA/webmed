@@ -136,7 +136,7 @@ const Meeting: React.FC = () => {
 
   const fetchDoctorData = async () => {
     try {
-      const data = await getDoctor(callDetails.doctor.id);
+      const data = await getDoctor(callDetails.doctor);
       setDoctor(data);
     } catch (error: any) {
       console.error(error.message);
@@ -145,7 +145,7 @@ const Meeting: React.FC = () => {
 
   const fetchPatientData = async () => {
     try {
-      const data = await getPatient(callDetails.patient.id);
+      const data = await getPatient(callDetails.patient);
       setPatient(data);
     } catch (error: any) {
       console.error(error.message);
