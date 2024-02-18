@@ -114,6 +114,8 @@ const Meeting: React.FC = () => {
 
   const { callId, callInfo } = useParams();
   const callDetails = decryptCallId(String(callInfo));
+  console.log('calldetails',callDetails);
+  
   const isPatient = callDetails.type === "patient";
   const isDoctor = callDetails.type === "doctor";
 
