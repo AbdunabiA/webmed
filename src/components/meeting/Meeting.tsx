@@ -39,12 +39,12 @@ import RecordRTC, {
 import html2canvas from "html2canvas";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA0qSy5_GrFzWRqJnb471kfgeythU350A4",
-  authDomain: "webmed-49eeb.firebaseapp.com",
-  projectId: "webmed-49eeb",
-  storageBucket: "webmed-49eeb.appspot.com",
-  messagingSenderId: "345587649191",
-  appId: "1:345587649191:web:0d91c838466441df166982"
+  apiKey: "AIzaSyAiuAWMLAFE8GtFNv0ZgtEaVCHWDd-8S00",
+  authDomain: "video-call-d2238.firebaseapp.com",
+  projectId: "video-call-d2238",
+  storageBucket: "video-call-d2238.appspot.com",
+  messagingSenderId: "333230397878",
+  appId: "1:333230397878:web:7bc0ab1a255412d4b68917",
 };
 
 if (!firebase.apps.length) {
