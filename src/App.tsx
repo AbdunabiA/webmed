@@ -26,6 +26,7 @@ import HalfRating from "./components/rating/HalfRating";
 import MeetingObserver from "./components/meeting/MeetingObserver";
 import Chat from "./components/chat/Chat";
 import Payment from "./components/payment/Payment";
+import Meeting2 from "./components/meeting/Meeting2";
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -131,7 +132,7 @@ function App() {
             <Route path="/patient-result" element={<PatientResult />} />
             <Route path="/success" element={<SuccessfulPage />} />
             <Route path="/rating" element={<HalfRating />} />
-            <Route path="/meeting/:callId/:callInfo" element={<Meeting />} />
+            <Route path="/meeting/:callId/:callInfo" element={<Meeting2 />} />
             <Route path="/meeting_chat/:chatId/:chatInfo" element={<Chat />} />
             <Route path="/payment" element={<Payment />} />
             {/*<Route
