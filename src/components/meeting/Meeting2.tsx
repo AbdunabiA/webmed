@@ -125,7 +125,7 @@ const Meeting2: React.FC = () => {
 
   useEffect(() => {
     // Initialize WebSocket connection
-    setWs(new WebSocket(`${WEBSOCKET_API}video/`));
+    setWs(new WebSocket(`${WEBSOCKET_API}video/${callId}`));
     if(ws){
 
         ws.onopen = () => {
