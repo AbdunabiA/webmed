@@ -91,6 +91,11 @@ const Meeting2: React.FC = () => {
   const [doctor, setDoctor] = useState<IDoctor>();
   const [patient, setPatient] = useState<IPatient>();
 
+
+    console.log('callStatus', callStatus);
+    console.log('connectionStatus', connectionStatus);
+    
+    
   const [windowRecorder, setWindowRecorder] = useState<
     RecordRTC | RecordRTCPromisesHandler | null
   >(null);
@@ -125,20 +130,23 @@ const Meeting2: React.FC = () => {
 
   useEffect(() => {
     // Initialize WebSocket connection
-    setWs(new WebSocket(`${WEBSOCKET_API}video/${callId}/`));
-    if(ws){
+    const socket = new WebSocket(`${WEBSOCKET_API}video/${callId}/`);
+    console.log("WEBSOCKET CONST", socket);
+    
+    setWs(socket);
+    // if(ws){
 
-        ws.onopen = () => {
+        socket.onopen = () => {
             console.log("WebSocket connection established");
             // Send a message or join a room if your server requires it
         };
-        ws.onmessage = (message) => {
+        socket.onmessage = (message) => {
             const msg = JSON.parse(message.data);
             console.log("WS Message", msg);
             
             handleSignalingData(msg);
         };
-    }
+    // }
 
     // Cleanup on component unmount
     return () => {
@@ -146,7 +154,7 @@ const Meeting2: React.FC = () => {
             ws.close();
         }
     };
-  }, []);
+  }, [callId]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -272,6 +280,7 @@ const Meeting2: React.FC = () => {
     pc.ontrack = (event) => {
         console.log('ontrack event',event);
       event.streams[0].getTracks().forEach((track) => {
+        console.log("adding remotetrack", track);
         remoteStream!.addTrack(track);
       });
     };
@@ -658,7 +667,9 @@ const Meeting2: React.FC = () => {
     const localUrl = URL.createObjectURL(localBlob);
     const remoteUrl = URL.createObjectURL(remoteBlob);
   };
-
+  console.log('remoteVideo',remoteVideo);
+  console.log("localVideo", webcamVideo);
+  
   return (
     <div>
       <Paper
