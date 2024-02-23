@@ -43,8 +43,8 @@ const VideoCallPage: React.FC = () => {
 
     ws.current.onmessage = async (message: MessageEvent) => {
       const data = JSON.parse(message.data);
-      console.log('websocket data',data);
-      
+      console.log("websocket data", data);
+
       const client: number =
         callDetails.type === "patient"
           ? callDetails.patient
@@ -103,7 +103,9 @@ const VideoCallPage: React.FC = () => {
 
     if (localStream) {
       localStream.getTracks().forEach((track) => {
-        pc.current.addTrack(track, localStream);
+        if (pc.current.signalingState !== "closed") {
+          pc.current.addTrack(track, localStream);
+        }
       });
     }
 
