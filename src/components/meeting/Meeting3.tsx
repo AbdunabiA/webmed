@@ -43,6 +43,8 @@ const VideoCallPage: React.FC = () => {
 
     ws.current.onmessage = async (message: MessageEvent) => {
       const data = JSON.parse(message.data);
+      console.log('websocket data',data);
+      
       const client: number =
         callDetails.type === "patient"
           ? callDetails.patient
