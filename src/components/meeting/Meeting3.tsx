@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { WEBSOCKET_API } from "../../utils/api";
+import { WEBSOCKET_API, callToPatient } from "../../utils/api";
 import { useParams } from "react-router-dom";
 import { decryptVideoCallId } from "../../utils/decryption";
 
@@ -117,6 +117,11 @@ const VideoCallPage: React.FC = () => {
   }, [localStream]);
 
   const callUser = async () => {
+    await callToPatient({
+      doctor_id: callDetails.doctor,
+      patient_id: callDetails.patient,
+      type: "patient",
+    });
     const offer = await pc.current.createOffer();
     await pc.current.setLocalDescription(offer);
     ws.current.send(
