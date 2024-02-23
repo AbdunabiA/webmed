@@ -15,10 +15,6 @@ const configuration: RTCConfiguration = {
     {
       urls: "stun:stun1.l.google.com:19302",
     },
-    // Twilio's global STUN server
-    {
-      urls: "stun:global.stun.twilio.com:3478?transport=udp",
-    },
   ],
 };
 
