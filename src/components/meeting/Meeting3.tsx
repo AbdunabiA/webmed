@@ -21,7 +21,7 @@ const configuration: RTCConfiguration = {
 const VideoCallPage: React.FC = () => {
   const { callId, callInfo } = useParams();
   const callDetails = decryptVideoCallId(String(callInfo));
-  const [clientId, setClientId] = useState(callDetails.type === "patient"
+  const clientId = useRef(callDetails.type === "patient"
           ? callDetails.patient
           : callDetails.doctor);
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -97,7 +97,7 @@ const VideoCallPage: React.FC = () => {
         case "candidate":
           if (data.candidate) {
             await pc.current.addIceCandidate(
-              new RTCIceCandidate(data.candidate)
+              new RTCIceCandidate(data)
             );
           }
           console.log('got candidate and set', data);
@@ -123,7 +123,9 @@ const VideoCallPage: React.FC = () => {
 
     pc.current.ontrack = (event: RTCTrackEvent) => {
       if (remoteVideoRef.current && event.streams[0]) {
+        
         remoteVideoRef.current.srcObject = event.streams[0];
+        console.log("remote ref set", remoteVideoRef);
       }
     };
 
