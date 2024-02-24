@@ -68,7 +68,7 @@ const VideoCallPage: React.FC = () => {
       // setClientId(client); // This should be dynamically set based on your app's logic
 
       // Ignore messages sent by the current client
-      if (data.senderId === clientId) {
+      if (data.senderId === clientId.current) {
         console.log('ignored');
         return;
       }
@@ -82,7 +82,7 @@ const VideoCallPage: React.FC = () => {
           const answer = await pc.current.createAnswer();
           await pc.current.setLocalDescription(answer);
           ws.current.send(
-            JSON.stringify({ type: "answer", answer, senderId: clientId })
+            JSON.stringify({ type: "answer", answer, senderId: clientId.current })
           );
           console.log('answer sent', answer);
           
@@ -116,7 +116,7 @@ const VideoCallPage: React.FC = () => {
           JSON.stringify({
             type: "candidate",
             candidate: event.candidate,
-            senderId: clientId,
+            senderId: clientId.current,
           })
         );
         console.log("candiate sent", event.candidate);
@@ -156,7 +156,7 @@ const VideoCallPage: React.FC = () => {
     const offer = await pc.current.createOffer();
     await pc.current.setLocalDescription(offer);
     ws.current.send(
-      JSON.stringify({ type: "offer", offer, senderId: clientId })
+      JSON.stringify({ type: "offer", offer, senderId: clientId.current })
     );
     console.log("offer sent", offer);
     
