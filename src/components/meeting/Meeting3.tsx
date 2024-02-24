@@ -29,17 +29,31 @@ const VideoCallPage: React.FC = () => {
   const ws = useRef<WebSocket>(
     new WebSocket(`${WEBSOCKET_API}video/${callId}/`)
   );
-
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
+    const getMedia = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
         setLocalStream(stream);
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
-      })
-      .catch((error) => console.error(error));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getMedia();
+  }, []);
+
+  useEffect(() => {
+    if (!localStream) return;
+
+    // localStream.getTracks().forEach((track) => {
+    //   pc.current.addTrack(track, localStream);
+    // });
 
     ws.current.onmessage = async (message: MessageEvent) => {
       const data = JSON.parse(message.data);
@@ -60,11 +74,15 @@ const VideoCallPage: React.FC = () => {
           await pc.current.setRemoteDescription(
             new RTCSessionDescription(data.offer)
           );
+          console.log('got offer', data);
+          
           const answer = await pc.current.createAnswer();
           await pc.current.setLocalDescription(answer);
           ws.current.send(
             JSON.stringify({ type: "answer", answer, senderId: clientId })
           );
+          console.log('answer sent', answer);
+          
           break;
         case "answer":
           await pc.current.setRemoteDescription(
@@ -92,6 +110,8 @@ const VideoCallPage: React.FC = () => {
             senderId: clientId,
           })
         );
+        console.log("candiate sent", event.candidate);
+        
       }
     };
 
@@ -101,13 +121,13 @@ const VideoCallPage: React.FC = () => {
       }
     };
 
-    if (localStream) {
+    // if (localStream) {
       localStream.getTracks().forEach((track) => {
         if (pc.current.signalingState !== "closed") {
           pc.current.addTrack(track, localStream);
         }
       });
-    }
+    // }
 
     return () => {
       localStream?.getTracks().forEach((track) => track.stop());
@@ -127,6 +147,8 @@ const VideoCallPage: React.FC = () => {
     ws.current.send(
       JSON.stringify({ type: "offer", offer, senderId: clientId })
     );
+    console.log("offer send", offer);
+    
   };
 
   return (

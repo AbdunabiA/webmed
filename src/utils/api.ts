@@ -4,11 +4,11 @@ import { ISelectedDateTime } from "../components/appointment/types";
 import { Message } from "../components/chat/Chat";
 
 // export const BACKEND_URL = "https://telecure.ru/api/v1";
-export const BACKEND_URL = "https://6c1d-194-93-25-68.ngrok-free.app/api/v1/";
+export const BACKEND_URL = "https://65ca-194-93-25-68.ngrok-free.app/api/v1/";
 
-export const WEBSOCKET_API = "wss://6c1d-194-93-25-68.ngrok-free.app/ws/"
+export const WEBSOCKET_API = "wss://65ca-194-93-25-68.ngrok-free.app/ws/"
 
-export const API_BASE_URL = "https://6c1d-194-93-25-68.ngrok-free.app/api/v1/";
+export const API_BASE_URL = "https://65ca-194-93-25-68.ngrok-free.app/api/v1/";
 
 const api = axios.create({
 	baseURL: BACKEND_URL,
