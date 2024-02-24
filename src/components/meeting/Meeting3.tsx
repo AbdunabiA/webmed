@@ -51,7 +51,7 @@ const VideoCallPage: React.FC = () => {
     getMedia();
   }, []);
 
-  if (callDetails.type === "doctor") {
+   
     ws.current.onopen = (event) => {
       console.log("Connection opened");
 
@@ -73,9 +73,9 @@ const VideoCallPage: React.FC = () => {
       };
 
       // Call the async function
-      initializeConnection();
+      if (callDetails.type === "doctor") initializeConnection();
     };
-  }
+  
 
 
   useEffect(() => {
