@@ -96,9 +96,12 @@ const VideoCallPage: React.FC = () => {
           break;
         case "candidate":
           if (data.candidate) {
-            await pc.current.addIceCandidate(
-              new RTCIceCandidate(data.candidate)
-            );
+            const candidate = new RTCIceCandidate({
+              candidate: data.candidate.candidate,
+              sdpMid: data.candidate.sdpMid,
+              sdpMLineIndex: data.candidate.sdpMLineIndex,
+            });
+            await pc.current.addIceCandidate(candidate);
           }
           console.log('got candidate and set', data);
           break;
@@ -158,7 +161,8 @@ const VideoCallPage: React.FC = () => {
     console.log("offer sent", offer);
     
   };
-
+  console.log(pc.current);
+  
   return (
     <div>
       <div>
