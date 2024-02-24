@@ -54,6 +54,8 @@ const VideoCallPage: React.FC = () => {
     if (!localStream) return;
 
     localStream.getTracks().forEach((track) => {
+      console.log('adding local stream', track);
+      
       pc.current.addTrack(track, localStream);
     });
 
@@ -67,6 +69,7 @@ const VideoCallPage: React.FC = () => {
 
       // Ignore messages sent by the current client
       if (data.senderId === clientId) {
+        console.log('ignored');
         return;
       }
       switch (data.type) {
@@ -74,7 +77,7 @@ const VideoCallPage: React.FC = () => {
           await pc.current.setRemoteDescription(
             new RTCSessionDescription(data.offer)
           );
-          console.log('got offer', data);
+          console.log('got offer and set', data);
           
           const answer = await pc.current.createAnswer();
           await pc.current.setLocalDescription(answer);
@@ -88,6 +91,8 @@ const VideoCallPage: React.FC = () => {
           await pc.current.setRemoteDescription(
             new RTCSessionDescription(data.answer)
           );
+          console.log('got answer and set', data);
+          
           break;
         case "candidate":
           if (data.candidate) {
@@ -95,6 +100,7 @@ const VideoCallPage: React.FC = () => {
               new RTCIceCandidate(data.candidate)
             );
           }
+          console.log('got candidate and set', data);
           break;
         default:
           break;
@@ -147,7 +153,7 @@ const VideoCallPage: React.FC = () => {
     ws.current.send(
       JSON.stringify({ type: "offer", offer, senderId: clientId })
     );
-    console.log("offer send", offer);
+    console.log("offer sent", offer);
     
   };
 
