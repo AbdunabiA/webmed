@@ -21,12 +21,13 @@ const configuration: RTCConfiguration = {
 const VideoCallPage: React.FC = () => {
   const { callId, callInfo } = useParams();
   const callDetails = decryptVideoCallId(String(callInfo));
-  const clientId = useRef(callDetails.type === "patient"
-          ? callDetails.patient
-          : callDetails.doctor);
+  const clientId = useRef(
+    callDetails.type === "patient" ? callDetails.patient : callDetails.doctor
+  );
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [wsConnection, setWsConnection] = useState(false);
   const pc = useRef<RTCPeerConnection>(new RTCPeerConnection(configuration));
   const ws = useRef<WebSocket>(
     new WebSocket(`${WEBSOCKET_API}video/${callId}/`)
@@ -50,12 +51,39 @@ const VideoCallPage: React.FC = () => {
     getMedia();
   }, []);
 
+  if (callDetails.type === "doctor") {
+    ws.current.onopen = (event) => {
+      console.log("Connection opened");
+
+      // Define an async function inside the event handler
+      const initializeConnection = async () => {
+        try {
+          const offer = await pc.current.createOffer();
+          await pc.current.setLocalDescription(offer);
+          ws.current.send(
+            JSON.stringify({ type: "offer", offer, senderId: clientId.current })
+          );
+          console.log("offer sent", offer);
+
+          // Once the connection is open, you can send messages to the server.
+          ws.current.send("Hello, server!");
+        } catch (error) {
+          console.error("Failed to create or send offer:", error);
+        }
+      };
+
+      // Call the async function
+      initializeConnection();
+    };
+  }
+
+
   useEffect(() => {
     if (!localStream) return;
 
     localStream.getTracks().forEach((track) => {
-      console.log('adding local stream', track);
-      
+      console.log("adding local stream", track);
+
       pc.current.addTrack(track, localStream);
     });
 
@@ -63,13 +91,9 @@ const VideoCallPage: React.FC = () => {
       const data = JSON.parse(message.data);
       console.log("websocket data", data);
 
-      // const client: number =
-        
-      // setClientId(client); // This should be dynamically set based on your app's logic
-
-      // Ignore messages sent by the current client
+  
       if (data.senderId === clientId.current) {
-        console.log('ignored');
+        console.log("ignored");
         return;
       }
       switch (data.type) {
@@ -77,22 +101,26 @@ const VideoCallPage: React.FC = () => {
           await pc.current.setRemoteDescription(
             new RTCSessionDescription(data.offer)
           );
-          console.log('got offer and set', data);
-          
+          console.log("got offer and set", data);
+
           const answer = await pc.current.createAnswer();
           await pc.current.setLocalDescription(answer);
           ws.current.send(
-            JSON.stringify({ type: "answer", answer, senderId: clientId.current })
+            JSON.stringify({
+              type: "answer",
+              answer,
+              senderId: clientId.current,
+            })
           );
-          console.log('answer sent', answer);
-          
+          console.log("answer sent", answer);
+
           break;
         case "answer":
           await pc.current.setRemoteDescription(
             new RTCSessionDescription(data.answer)
           );
-          console.log('got answer and set', data);
-          
+          console.log("got answer and set", data);
+
           break;
         case "candidate":
           if (data.candidate) {
@@ -103,7 +131,7 @@ const VideoCallPage: React.FC = () => {
             });
             await pc.current.addIceCandidate(candidate);
           }
-          console.log('got candidate and set', data);
+          console.log("got candidate and set", data);
           break;
         default:
           break;
@@ -120,24 +148,22 @@ const VideoCallPage: React.FC = () => {
           })
         );
         console.log("candiate sent", event.candidate);
-        
       }
     };
 
     pc.current.ontrack = (event: RTCTrackEvent) => {
       if (remoteVideoRef.current && event.streams[0]) {
-        
         remoteVideoRef.current.srcObject = event.streams[0];
         console.log("remote ref set", remoteVideoRef);
       }
     };
 
     // if (localStream) {
-      // localStream.getTracks().forEach((track) => {
-      //   if (pc.current.signalingState !== "closed") {
-      //     pc.current.addTrack(track, localStream);
-      //   }
-      // });
+    // localStream.getTracks().forEach((track) => {
+    //   if (pc.current.signalingState !== "closed") {
+    //     pc.current.addTrack(track, localStream);
+    //   }
+    // });
     // }
 
     return () => {
@@ -153,16 +179,9 @@ const VideoCallPage: React.FC = () => {
       patient_id: callDetails.patient,
       type: "patient",
     });
-    const offer = await pc.current.createOffer();
-    await pc.current.setLocalDescription(offer);
-    ws.current.send(
-      JSON.stringify({ type: "offer", offer, senderId: clientId.current })
-    );
-    console.log("offer sent", offer);
-    
   };
   console.log(pc.current);
-  
+
   return (
     <div>
       <div>
@@ -183,7 +202,11 @@ const VideoCallPage: React.FC = () => {
         />
       </div>
       <div>
-        {callDetails.type !== "patient" ? <button onClick={callUser}>Call</button> : <button>Answer</button>}
+        {callDetails.type !== "patient" ? (
+          <button onClick={callUser}>Call</button>
+        ) : (
+          <button>Answer</button>
+        )}
       </div>
     </div>
   );
