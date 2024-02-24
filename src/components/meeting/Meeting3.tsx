@@ -177,7 +177,7 @@ const VideoCallPage: React.FC = () => {
         />
       </div>
       <div>
-        {callDetails.type === "patient" ? <button onClick={callUser}>Call</button> : <button>Answer</button>}
+        {callDetails.type !== "patient" ? <button onClick={callUser}>Call</button> : <button>Answer</button>}
       </div>
     </div>
   );
