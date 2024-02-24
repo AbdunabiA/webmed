@@ -21,7 +21,9 @@ const configuration: RTCConfiguration = {
 const VideoCallPage: React.FC = () => {
   const { callId, callInfo } = useParams();
   const callDetails = decryptVideoCallId(String(callInfo));
-  const [clientId, setClientId] = useState(0);
+  const [clientId, setClientId] = useState(callDetails.type === "patient"
+          ? callDetails.patient
+          : callDetails.doctor);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
@@ -51,19 +53,17 @@ const VideoCallPage: React.FC = () => {
   useEffect(() => {
     if (!localStream) return;
 
-    // localStream.getTracks().forEach((track) => {
-    //   pc.current.addTrack(track, localStream);
-    // });
+    localStream.getTracks().forEach((track) => {
+      pc.current.addTrack(track, localStream);
+    });
 
     ws.current.onmessage = async (message: MessageEvent) => {
       const data = JSON.parse(message.data);
       console.log("websocket data", data);
 
-      const client: number =
-        callDetails.type === "patient"
-          ? callDetails.patient
-          : callDetails.doctor;
-      setClientId(client); // This should be dynamically set based on your app's logic
+      // const client: number =
+        
+      // setClientId(client); // This should be dynamically set based on your app's logic
 
       // Ignore messages sent by the current client
       if (data.senderId === clientId) {
@@ -122,11 +122,11 @@ const VideoCallPage: React.FC = () => {
     };
 
     // if (localStream) {
-      localStream.getTracks().forEach((track) => {
-        if (pc.current.signalingState !== "closed") {
-          pc.current.addTrack(track, localStream);
-        }
-      });
+      // localStream.getTracks().forEach((track) => {
+      //   if (pc.current.signalingState !== "closed") {
+      //     pc.current.addTrack(track, localStream);
+      //   }
+      // });
     // }
 
     return () => {
@@ -171,7 +171,7 @@ const VideoCallPage: React.FC = () => {
         />
       </div>
       <div>
-        <button onClick={callUser}>Call</button>
+        {callDetails.type === "patient" ? <button onClick={callUser}>Call</button> : <button>Answer</button>}
       </div>
     </div>
   );
