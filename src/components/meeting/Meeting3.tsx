@@ -97,7 +97,7 @@ const VideoCallPage: React.FC = () => {
         case "candidate":
           if (data.candidate) {
             await pc.current.addIceCandidate(
-              new RTCIceCandidate(data)
+              new RTCIceCandidate(data.candidate)
             );
           }
           console.log('got candidate and set', data);
