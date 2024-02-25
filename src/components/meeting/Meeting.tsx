@@ -353,6 +353,8 @@ const Meeting: React.FC = () => {
 
     console.log("[Connection Status]", connection.iceConnectionState);
   };
+  console.log("pc connection", connectionStatus);
+  
 
   const handleHangupButtonClick = () => {
     stopRecording();
