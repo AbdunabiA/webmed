@@ -128,6 +128,51 @@ const Meeting2: React.FC = () => {
   const isPatient = callDetails.type === "patient";
   const isDoctor = callDetails.type === "doctor";
 
+    const sendSignalingData = (data: any) => {
+      ws!.send(JSON.stringify(data));
+    };
+    const handleOffer = async (offer: any) => {
+      pc.setRemoteDescription(new RTCSessionDescription(offer));
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      sendSignalingData({ type: "answer", answer, senderId: clientId });
+    };
+
+    const handleAnswer = (answer: any) => {
+      pc.setRemoteDescription(new RTCSessionDescription(answer));
+    };
+
+    const handleNewICECandidateMsg = (candidate: any) => {
+      pc.addIceCandidate(new RTCIceCandidate(candidate));
+    };
+
+    const handleSignalingData = (data: any) => {
+      switch (data.type) {
+        case "offer":
+          if (callDetails.type === "patient") {
+            handleOffer(data.offer);
+            console.log("handled offer", data.offer);
+          }
+
+          break;
+        case "answer":
+          if (callDetails.type === "doctor") {
+            handleAnswer(data.answer);
+            console.log("handled answer", data.answer);
+          }
+
+          break;
+        case "candidate":
+          if (clientId !== data.senderId) {
+            handleNewICECandidateMsg(data.candidate);
+            console.log("handled candidate", data.answer);
+          }
+          break;
+        default:
+          break;
+      }
+    };
+
   useEffect(() => {
     // Initialize WebSocket connection
     const socket = new WebSocket(`${WEBSOCKET_API}video/${callId}/`);
@@ -171,50 +216,7 @@ const Meeting2: React.FC = () => {
     };
   }, []);
 
-  const sendSignalingData = (data: any) => {
-    ws!.send(JSON.stringify(data));
-  };
-  const handleOffer = async (offer: any) => {
-    pc.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    sendSignalingData({ type: "answer", answer, senderId: clientId });
-  };
 
-  const handleAnswer = (answer: any) => {
-    pc.setRemoteDescription(new RTCSessionDescription(answer));
-  };
-
-  const handleNewICECandidateMsg = (candidate: any) => {
-    pc.addIceCandidate(new RTCIceCandidate(candidate));
-  };
-
-  const handleSignalingData = (data: any) => {
-    switch (data.type) {
-      case "offer":
-        if (callDetails.type === "patient") {
-          handleOffer(data.offer);
-          console.log("handled offer", data.offer);
-        }
-
-        break;
-      case "answer":
-        if (callDetails.type === "doctor") {
-          handleAnswer(data.answer);
-          console.log("handled answer", data.answer);
-        }
-
-        break;
-      case "candidate":
-        if(clientId !== data.senderId){
-          handleNewICECandidateMsg(data.candidate);
-          console.log("handled candidate", data.answer);
-        }
-        break;
-      default:
-        break;
-    }
-  };
 
   const fetchDoctorData = async () => {
     try {
@@ -440,7 +442,8 @@ const Meeting2: React.FC = () => {
       //   });
     }
   };
-
+  console.log(ws?.readyState);
+  
   const handleAnswerButtonClick = () => {
     setOnCall(true);
     handleWebcamButtonClick();
