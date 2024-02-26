@@ -134,7 +134,7 @@ const Meeting4: React.FC = () => {
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
     sendSignalingData({ type: "answer", answer, senderId: clientId.current });
-    setTimeout(() => {
+    // setTimeout(() => {
       pc.onicecandidate = (event) => {
         console.log("onicecandidate event patient", event);
 
@@ -148,7 +148,7 @@ const Meeting4: React.FC = () => {
             })
           );
       };
-    }, 2000);
+    // }, 2000);
   };
 
   const handleAnswer = (answer: any) => {
