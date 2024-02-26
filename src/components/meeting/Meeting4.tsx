@@ -83,20 +83,20 @@ const Meeting4: React.FC = () => {
 //   });
 
 
-  const [callStatus, setCallStatus] = useState<"incoming" | "outgoing">(
-    "incoming"
-  );
-  const [connectionStatus, setConnectionStatus] = useState<
-    "initial" | "connected" | "connecting" | "disconnected"
-  >("initial");
+//   const [callStatus, setCallStatus] = useState<"incoming" | "outgoing">(
+//     "incoming"
+//   );
+//   const [connectionStatus, setConnectionStatus] = useState<
+//     "initial" | "connected" | "connecting" | "disconnected"
+//   >("initial");
   const [onCall, setOnCall] = useState<boolean>(false);
 //   const [videoCamOn, setVideoCamOn] = useState<boolean>(true);
 //   const [videoMicOn, setVideoMicOn] = useState<boolean>(true);
   const doctor = useRef<IDoctor | null>(null);
   const patient = useRef<IPatient | null>(null);
 
-  console.log("callStatus", callStatus);
-  console.log("connectionStatus", connectionStatus);
+//   console.log("callStatus", callStatus);
+//   console.log("connectionStatus", connectionStatus);
 
 //   const [windowRecorder, setWindowRecorder] = useState<
 //     RecordRTC | RecordRTCPromisesHandler | null
@@ -273,7 +273,7 @@ const Meeting4: React.FC = () => {
       fetchDoctorData();
     }
     if (isDoctor) {
-      setCallStatus("outgoing");
+    //   setCallStatus("outgoing");
       fetchPatientData();
     }
   }, [callId]);
@@ -297,21 +297,22 @@ const Meeting4: React.FC = () => {
     remoteStream = new MediaStream();
 
     localStream.getTracks().forEach((track) => {
-      pc.addTrack(track, localStream!);
+        pc.addTrack(track, localStream!);
+        console.log('local track is being added to track');
     });
 
-    let options = { mimeType: "video/webm; codecs=vp9" };
-    if (MediaRecorder.isTypeSupported("video/webm; codecs=vp9")) {
-      options = { mimeType: "video/webm; codecs=vp9" };
-    } else if (MediaRecorder.isTypeSupported("video/webm")) {
-      options = { mimeType: "video/webm" };
-    } else if (MediaRecorder.isTypeSupported("video/mp4")) {
-      options = { mimeType: "video/mp4" };
-    } else {
-    }
+    // let options = { mimeType: "video/webm; codecs=vp9" };
+    // if (MediaRecorder.isTypeSupported("video/webm; codecs=vp9")) {
+    //   options = { mimeType: "video/webm; codecs=vp9" };
+    // } else if (MediaRecorder.isTypeSupported("video/webm")) {
+    //   options = { mimeType: "video/webm" };
+    // } else if (MediaRecorder.isTypeSupported("video/mp4")) {
+    //   options = { mimeType: "video/mp4" };
+    // } else {
+    // }
 
-    const localMediaRecorde = new MediaRecorder(localStream, options);
-    const remoteMediaRecorde = new MediaRecorder(remoteStream, options);
+    // const localMediaRecorde = new MediaRecorder(localStream, options);
+    // const remoteMediaRecorde = new MediaRecorder(remoteStream, options);
 
     pc.ontrack = (event) => {
       console.log("ontrack event", event);
@@ -379,7 +380,7 @@ const Meeting4: React.FC = () => {
   const handleCallButtonClick = async () => {
     setOnCall(true);
     handleWebcamButtonClick();
-    setConnectionStatus("connecting");
+    // setConnectionStatus("connecting");
 
     setTimeout(() => {
       handleCall();
@@ -402,29 +403,17 @@ const Meeting4: React.FC = () => {
     // }
 
     // Check if remoteDescription is set before proceeding
-    if (pc.remoteDescription) {
-      const answerDescription = await pc.createAnswer();
-      await pc.setLocalDescription(answerDescription);
-      sendSignalingData({
-        type: "answer",
-        answer: pc.localDescription,
-        senderId: clientId.current,
-      });
-      console.log("sent answerDescription", answerDescription);
+    // if (pc.remoteDescription) {
+    //   const answerDescription = await pc.createAnswer();
+    //   await pc.setLocalDescription(answerDescription);
+    //   sendSignalingData({
+    //     type: "answer",
+    //     answer: pc.localDescription,
+    //     senderId: clientId.current,
+    //   });
+    //   console.log("sent answerDescription", answerDescription);
 
-      pc.onicecandidate = (event) => {
-        console.log("onicecandidate event", event);
-
-        event.candidate &&
-          ws.current &&
-          ws.current.send(
-            JSON.stringify({
-              type: "candidate",
-              candidate: event.candidate,
-              senderId: clientId.current,
-            })
-          );
-      };
+      
 
       //   const answer = {
       //     type: answerDescription.type,
@@ -447,7 +436,20 @@ const Meeting4: React.FC = () => {
       //       }
       //     });
       //   });
-    }
+    // }
+    pc.onicecandidate = (event) => {
+      console.log("onicecandidate event", event);
+
+      event.candidate &&
+        ws.current &&
+        ws.current.send(
+          JSON.stringify({
+            type: "candidate",
+            candidate: event.candidate,
+            senderId: clientId.current,
+          })
+        );
+    };
   };
   console.log("websocket", ws.current);
 
@@ -475,10 +477,14 @@ const Meeting4: React.FC = () => {
       handleHangupButtonClick();
     //   stopRecording();
     } else if (connection.iceConnectionState === "checking") {
-      setConnectionStatus("connecting");
+    //   setConnectionStatus("connecting");
+    console.log('checking');
+    
     } else if (connection.iceConnectionState === "connected") {
-      setConnectionStatus("connected");
+    //   setConnectionStatus("connected");
     //   startRecording();
+    console.log('connected');
+    
     }
 
     console.log("[Connection Status]", connection.iceConnectionState);
@@ -517,18 +523,18 @@ const Meeting4: React.FC = () => {
 
     pc.close();
 
-    if (isDoctor) {
-      setConnectionStatus("disconnected");
-      createPatientResult();
-    }
-    if (isPatient) {
-      setConnectionStatus("disconnected");
-      navigate("/rating", {
-        state: {
-          doctor:doctor.current,
-        },
-      });
-    }
+    // if (isDoctor) {
+    //   setConnectionStatus("disconnected");
+    //   createPatientResult();
+    // }
+    // if (isPatient) {
+    //   setConnectionStatus("disconnected");
+    //   navigate("/rating", {
+    //     state: {
+    //       doctor:doctor.current,
+    //     },
+    //   });
+    // }
 
     if (callId) {
       endCall(callId);
@@ -722,7 +728,7 @@ const Meeting4: React.FC = () => {
           autoPlay
           playsInline
         ></video>
-        {isDoctor && connectionStatus === "disconnected" && (
+        {/* {isDoctor && connectionStatus === "disconnected" && (
           <Button
             variant="contained"
             sx={{
@@ -739,7 +745,7 @@ const Meeting4: React.FC = () => {
           >
             Leave diagnostics
           </Button>
-        )}
+        )} */}
         {isPatient && !onCall && !remoteStream && (
           <Box
             sx={{
@@ -812,8 +818,8 @@ const Meeting4: React.FC = () => {
 						</Typography> */}
           </Box>
         )}
-        {connectionStatus === "connecting" && <CennectionChecking />}
-        {connectionStatus !== "disconnected" && (
+        {/* {connectionStatus === "connecting" && <CennectionChecking />} */}
+        {/* {connectionStatus !== "disconnected" && ( */}
           <Box
             sx={{
               display: "flex",
@@ -836,7 +842,7 @@ const Meeting4: React.FC = () => {
             >
               {!onCall && (
                 <IconButton
-                  className={callStatus === "incoming" ? "ringing-icon" : ""}
+                //   className={callStatus === "incoming" ? "ringing-icon" : ""}
                   sx={{
                     backgroundColor: "green",
                     marginRight: "40px",
@@ -848,22 +854,22 @@ const Meeting4: React.FC = () => {
                   <CallIcon />
                 </IconButton>
               )}
-              {connectionStatus === "connecting" && isDoctor && (
+              {/* {connectionStatus === "connecting" && isDoctor && (
                 <audio controls={false} autoPlay loop>
                   <source
                     src="https://web.telegram.org/a/call_ringing.mp3"
                     type="audio/mpeg"
                   ></source>
                 </audio>
-              )}
-              {connectionStatus === "connecting" && isPatient && (
+              )} */}
+              {/* {connectionStatus === "connecting" && isPatient && (
                 <audio controls={false} autoPlay loop>
                   <source
                     src="https://web.telegram.org/a/voicechat_connecting.mp3"
                     type="audio/mpeg"
                   ></source>
                 </audio>
-              )}
+              )} */}
               {/* {onCall && (
                 <>
                   <IconButton
@@ -896,7 +902,7 @@ const Meeting4: React.FC = () => {
               </IconButton>
             </ButtonGroup>
           </Box>
-        )}
+        {/* )} */}
         {onCall && (
           <video
             width={100}
