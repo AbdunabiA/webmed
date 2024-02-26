@@ -589,7 +589,7 @@ const Meeting4: React.FC = () => {
           </ButtonGroup>
         </Box>
         {/* )} */}
-        {/* {onCall && ( */}
+        {onCall && (
           <video
             width={100}
             height={150}
@@ -605,7 +605,7 @@ const Meeting4: React.FC = () => {
             autoPlay
             playsInline
           ></video>
-        {/* )} */}
+        )}
       </Paper>
     </div>
   );
