@@ -29,6 +29,7 @@ import Payment from "./components/payment/Payment";
 import Meeting2 from "./components/meeting/Meeting2";
 import VideoCallPage from "./components/meeting/Meeting3";
 import Meeting4 from "./components/meeting/Meeting4";
+import Meeting5 from "./components/meeting/Meeting5";
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -134,7 +135,7 @@ function App() {
             <Route path="/patient-result" element={<PatientResult />} />
             <Route path="/success" element={<SuccessfulPage />} />
             <Route path="/rating" element={<HalfRating />} />
-            <Route path="/meeting/:callId/:callInfo" element={<Meeting4 />} />
+            <Route path="/meeting/:callId/:callInfo" element={<Meeting5 />} />
             <Route path="/meeting_chat/:chatId/:chatInfo" element={<Chat />} />
             <Route path="/payment" element={<Payment />} />
             {/*<Route
