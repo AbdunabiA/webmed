@@ -64,6 +64,7 @@ const Meeting4: React.FC = () => {
   const [onCall, setOnCall] = useState<boolean>(false);
   const doctor = useRef<IDoctor | null>(null);
   const patient = useRef<IPatient | null>(null);
+  const [localStreamm, setLocalStreamm] = useState<MediaStream | null>(null);
 
   const socketPatient = useRef<WebSocket | null>(null);
   const socketDoctor = useRef<WebSocket | null>(null);
@@ -235,6 +236,7 @@ const Meeting4: React.FC = () => {
       video: true,
       // audio: true,
     });
+    setLocalStreamm(localStream)
     remoteStream = new MediaStream();
     if (webcamVideo.current) {
       webcamVideo.current.srcObject = localStream;
