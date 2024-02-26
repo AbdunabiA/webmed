@@ -152,7 +152,9 @@ const Meeting4: React.FC = () => {
   };
 
   const handleAnswer = (answer: any) => {
+    
     pc.setRemoteDescription(new RTCSessionDescription(answer));
+    console.log('handle answer was called', answer);
   };
 
   const handleNewICECandidateMsg = (candidate: any) => {
