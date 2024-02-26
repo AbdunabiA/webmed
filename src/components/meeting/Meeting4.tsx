@@ -164,7 +164,7 @@ const Meeting4: React.FC = () => {
   const handleSignalingData = (data: any) => {
     switch (data.type) {
       case "offer":
-        if (callDetails.type === "patient") {
+        if (clientId !== data.senderId) {
           handleOffer(data.offer);
           console.log("handled offer", data.offer);
         }
