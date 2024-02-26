@@ -312,7 +312,9 @@ const Meeting4: React.FC = () => {
       // audio: true,
     });
     remoteStream = new MediaStream();
-
+    if (webcamVideo.current) {
+      webcamVideo.current.srcObject = localStream;
+    }
     localStream.getTracks().forEach((track) => {
       pc.addTrack(track, localStream!);
       console.log("local track is being added to track");
@@ -339,9 +341,7 @@ const Meeting4: React.FC = () => {
       });
     };
 
-    if (webcamVideo.current) {
-      webcamVideo.current.srcObject = localStream;
-    }
+    
     if (remoteVideo.current) {
       remoteVideo.current.srcObject = remoteStream;
     }
@@ -900,7 +900,7 @@ const Meeting4: React.FC = () => {
         {onCall && (
           <video
             width={100}
-            height={250}
+            height={150}
             style={{
               position: "fixed",
               bottom: "90px",
