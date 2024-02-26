@@ -449,7 +449,7 @@ const Meeting2: React.FC = () => {
     handleWebcamButtonClick();
     setTimeout(() => {
       handleAnswerCall();
-    }, 10000);
+    }, 4000);
   };
 
   const createPatientResult = () => {
