@@ -135,7 +135,7 @@ const Meeting2: React.FC = () => {
       pc.setRemoteDescription(new RTCSessionDescription(offer));
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
-      sendSignalingData({ type: "answer", answer, senderId: clientId });
+      sendSignalingData({ type: "answer", answer, senderId: clientId.current });
     };
 
     const handleAnswer = (answer: any) => {
@@ -163,13 +163,13 @@ const Meeting2: React.FC = () => {
 
           break;
         case "candidate":
-          if (clientId !== data.senderId) {
+          if (clientId.current !== data.senderId) {
             handleNewICECandidateMsg(data.candidate);
             console.log("handled candidate", data.answer);
           }
           break;
         case "patientConnected":
-          if (clientId !== data.senderId){
+          if (clientId.current !== data.senderId){
             pc.createOffer()
               .then((offer) => {
                 console.log("offer", offer);
@@ -177,7 +177,7 @@ const Meeting2: React.FC = () => {
                 sendSignalingData({
                   type: "offer",
                   offer: offer,
-                  senderId: clientId,
+                  senderId: clientId.current,
                 });
               })
               .then(() => {
@@ -194,7 +194,7 @@ const Meeting2: React.FC = () => {
                     JSON.stringify({
                       type: "candidate",
                       candidate: event,
-                      senderId: clientId,
+                      senderId: clientId.current,
                     })
                   );
               };
@@ -217,7 +217,7 @@ const Meeting2: React.FC = () => {
       console.log("WebSocket connection established");
       // Send a message or join a room if your server requires it
       if(callDetails.type === 'patient'){
-        socket.send(JSON.stringify({ type: "patientConnected", senderId : clientId}));
+        socket.send(JSON.stringify({ type: "patientConnected", senderId : clientId.current}));
       }
     };
     socket.onmessage = (message) => {
@@ -414,7 +414,7 @@ const Meeting2: React.FC = () => {
       sendSignalingData({
         type: "answer",
         answer: pc.localDescription,
-        senderId: clientId,
+        senderId: clientId.current,
       });
       console.log("sent answerDescription", answerDescription);
 
@@ -427,7 +427,7 @@ const Meeting2: React.FC = () => {
             JSON.stringify({
               type: "candidate",
               candidate: event,
-              senderId: clientId,
+              senderId: clientId.current,
             })
           );
       };
