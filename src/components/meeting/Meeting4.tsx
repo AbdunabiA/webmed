@@ -134,19 +134,21 @@ const Meeting4: React.FC = () => {
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
     sendSignalingData({ type: "answer", answer, senderId: clientId.current });
-    pc.onicecandidate = (event) => {
-      console.log("onicecandidate event patient", event);
+    setTimeout(() => {
+      pc.onicecandidate = (event) => {
+        console.log("onicecandidate event patient", event);
 
-      event.candidate &&
-        ws.current &&
-        ws.current.send(
-          JSON.stringify({
-            type: "candidate",
-            candidate: event.candidate,
-            senderId: clientId.current,
-          })
-        );
-    };
+        event.candidate &&
+          ws.current &&
+          ws.current.send(
+            JSON.stringify({
+              type: "candidate",
+              candidate: event.candidate,
+              senderId: clientId.current,
+            })
+          );
+      };
+    }, 2000);
   };
 
   const handleAnswer = (answer: any) => {
@@ -171,7 +173,6 @@ const Meeting4: React.FC = () => {
           handleAnswer(data.answer);
           console.log("handled answer", data.answer);
         }
-
         break;
       case "candidate":
         if (clientId.current !== data.senderId) {
@@ -263,6 +264,7 @@ const Meeting4: React.FC = () => {
   //       window.removeEventListener("resize", handleResize);
   //     };
   //   }, []);
+  localStorage.setItem("key", JSON.stringify({ key: "value" }));
 
   const fetchDoctorData = async () => {
     try {
