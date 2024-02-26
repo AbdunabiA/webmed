@@ -193,7 +193,7 @@ const Meeting2: React.FC = () => {
                   ws.current.send(
                     JSON.stringify({
                       type: "candidate",
-                      candidate: event,
+                      candidate: event.candidate,
                       senderId: clientId.current,
                     })
                   );
@@ -426,7 +426,7 @@ const Meeting2: React.FC = () => {
           ws.current.send(
             JSON.stringify({
               type: "candidate",
-              candidate: event,
+              candidate: event.candidate,
               senderId: clientId.current,
             })
           );
