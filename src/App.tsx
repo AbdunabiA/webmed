@@ -134,7 +134,7 @@ function App() {
             <Route path="/patient-result" element={<PatientResult />} />
             <Route path="/success" element={<SuccessfulPage />} />
             <Route path="/rating" element={<HalfRating />} />
-            <Route path="/meeting/:callId/:callInfo" element={<Meeting4 />} />
+            <Route path="/meeting/:callId/:callInfo" element={<VideoCallPage />} />
             <Route path="/meeting_chat/:chatId/:chatInfo" element={<Chat />} />
             <Route path="/payment" element={<Payment />} />
             {/*<Route

@@ -51,7 +51,7 @@ let localStream: MediaStream | null = null;
 let remoteStream: MediaStream | null = null;
 
 const Meeting4: React.FC = () => {
-  const pc = useRef(new RTCPeerConnection(servers));
+  const pc = useRef<RTCPeerConnection>(new RTCPeerConnection(servers));
   const { callId, callInfo } = useParams();
   const callDetails = decryptVideoCallId(String(callInfo));
   const navigate = useNavigate();
@@ -238,11 +238,15 @@ const Meeting4: React.FC = () => {
     remoteStream = new MediaStream();
     if (webcamVideo.current) {
       webcamVideo.current.srcObject = localStream;
+      console.log("webcamVideo.current.srcObject");
+      
     }
-    localStream.getTracks().forEach((track) => {
-      pc.current.addTrack(track, localStream!);
-      console.log("local track is being added to track");
-    });
+    if(localStream){
+      localStream.getTracks().forEach((track) => {
+        pc.current.addTrack(track, localStream!);
+        console.log("local track is being added to track");
+      });
+    }
 
     pc.current.ontrack = (event) => {
       console.log("ontrack event", event);
