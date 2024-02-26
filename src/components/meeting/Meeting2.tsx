@@ -168,6 +168,37 @@ const Meeting2: React.FC = () => {
             console.log("handled candidate", data.answer);
           }
           break;
+        case "patientConnected":
+          if (clientId !== data.senderId){
+            pc.createOffer()
+              .then((offer) => {
+                console.log("offer", offer);
+                pc.setLocalDescription(offer);
+              })
+              .then(() => {
+                // Send the offer to the remote peer via the signaling server
+                console.log("Doctor local description", pc.localDescription);
+
+                sendSignalingData({
+                  type: "offer",
+                  offer: pc.localDescription,
+                  senderId: clientId,
+                });
+              });
+
+              pc.onicecandidate = (event) => {
+                event.candidate &&
+                  ws &&
+                  ws.send(
+                    JSON.stringify({
+                      type: "candidate",
+                      candidate: event,
+                      senderId: clientId,
+                    })
+                  );
+              };
+          }
+          break;
         default:
           break;
       }
@@ -184,6 +215,9 @@ const Meeting2: React.FC = () => {
     socket.onopen = () => {
       console.log("WebSocket connection established");
       // Send a message or join a room if your server requires it
+      if(callDetails.type === 'patient'){
+        socket.send(JSON.stringify({ type: "patientConnected", senderId : clientId}));
+      }
     };
     socket.onmessage = (message) => {
       const msg = JSON.parse(message.data);
@@ -309,33 +343,9 @@ const Meeting2: React.FC = () => {
     // const offerCandidates = callDoc.collection("offerCandidates");
     // const answerCandidates = callDoc.collection("answerCandidates");
 
-    pc.createOffer()
-      .then((offer) => {
-        console.log("offer", offer);
-        pc.setLocalDescription(offer);
-      })
-      .then(() => {
-        // Send the offer to the remote peer via the signaling server
-        console.log("Doctor local description", pc.localDescription);
-        
-        sendSignalingData({
-          type: "offer",
-          offer: pc.localDescription,
-          senderId: clientId,
-        });
-      });
+    
 
-    pc.onicecandidate = (event) => {
-      event.candidate &&
-        ws &&
-        ws.send(
-          JSON.stringify({
-            type: "candidate",
-            candidate: event,
-            senderId: clientId,
-          })
-        );
-    };
+    
 
     // const offer = {
     //   sdp: offerDescription.sdp,
@@ -378,7 +388,7 @@ const Meeting2: React.FC = () => {
 
     setTimeout(() => {
       handleCall();
-    }, 10000);
+    }, 5000);
   };
 
   const handleAnswerCall = async () => {
@@ -408,6 +418,8 @@ const Meeting2: React.FC = () => {
       console.log("sent answerDescription", answerDescription);
 
       pc.onicecandidate = (event) => {
+        console.log("onicecandidate event", event);
+        
         event.candidate &&
           ws &&
           ws.send(
@@ -442,14 +454,14 @@ const Meeting2: React.FC = () => {
       //   });
     }
   };
-  console.log(ws?.readyState);
+  console.log('websocket',ws);
   
   const handleAnswerButtonClick = () => {
     setOnCall(true);
     handleWebcamButtonClick();
     setTimeout(() => {
       handleAnswerCall();
-    }, 4000);
+    }, 5000);
   };
 
   const createPatientResult = () => {
