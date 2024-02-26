@@ -174,16 +174,17 @@ const Meeting2: React.FC = () => {
               .then((offer) => {
                 console.log("offer", offer);
                 pc.setLocalDescription(offer);
+                sendSignalingData({
+                  type: "offer",
+                  offer: offer,
+                  senderId: clientId,
+                });
               })
               .then(() => {
                 // Send the offer to the remote peer via the signaling server
-                console.log("Doctor local description", pc.localDescription);
+                
 
-                sendSignalingData({
-                  type: "offer",
-                  offer: pc.localDescription,
-                  senderId: clientId,
-                });
+                
               });
 
               pc.onicecandidate = (event) => {
