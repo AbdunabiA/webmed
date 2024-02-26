@@ -173,7 +173,7 @@ const Meeting4: React.FC = () => {
       case "answer":
         console.log('answer is in the case', data);
         
-        if (callDetails.type === "doctor") {
+        if (clientId !== data.senderId) {
           handleAnswer(data.answer);
           console.log("handled answer", data.answer);
         }
