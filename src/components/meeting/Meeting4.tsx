@@ -163,26 +163,25 @@ const Meeting4: React.FC = () => {
 
   const handleSignalingData = (data: any) => {
     switch (data.type) {
-      case "offer":
-        if (clientId !== data.senderId) {
-          handleOffer(data.offer);
-          console.log("handled offer", data.offer);
-        }
+      case "offer" && clientId.current !== data.senderId:
+        // if (clientId !== data.senderId) {
+        handleOffer(data.offer);
+        console.log("handled offer", data.offer);
+        // }
+        break;
+      case "answer" && clientId.current !== data.senderId:
+        // console.log("answer is in the case", data);
 
+        // if (clientId !== data.senderId) {
+        handleAnswer(data.answer);
+        console.log("handled answer", data.answer);
+        // }
         break;
-      case "answer":
-        console.log('answer is in the case', data);
-        
-        if (clientId !== data.senderId) {
-          handleAnswer(data.answer);
-          console.log("handled answer", data.answer);
-        }
-        break;
-      case "candidate":
-        if (clientId.current !== data.senderId) {
+      case "candidate" && clientId.current !== data.senderId:
+        // if (clientId.current !== data.senderId) {
           handleNewICECandidateMsg(data.candidate);
           console.log("handled candidate", data.candidate);
-        }
+        // }
         break;
       case "patientConnected":
         if (clientId.current !== data.senderId) {
