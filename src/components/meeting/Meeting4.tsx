@@ -291,6 +291,8 @@ const Meeting4: React.FC = () => {
 
   };
   console.log("websocket", ws.current);
+  console.log('PC', pc.current);
+  
 
   const handleAnswerButtonClick = () => {
     console.log('handleAnswerButtonClick function called');
