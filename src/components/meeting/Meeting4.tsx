@@ -17,8 +17,6 @@ import {
   MicOff,
 } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
-import firebase from "firebase/app";
-import "firebase/firestore";
 import { decryptCallId, decryptVideoCallId } from "../../utils/decryption";
 import { tgSecondaryBgColor } from "../../utils/colors";
 import "./style.css";
@@ -37,22 +35,7 @@ import RecordRTC, {
   RecordRTCPromisesHandler,
   invokeSaveAsDialog,
 } from "recordrtc";
-import html2canvas from "html2canvas";
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyAiuAWMLAFE8GtFNv0ZgtEaVCHWDd-8S00",
-//   authDomain: "video-call-d2238.firebaseapp.com",
-//   projectId: "video-call-d2238",
-//   storageBucket: "video-call-d2238.appspot.com",
-//   messagingSenderId: "333230397878",
-//   appId: "1:333230397878:web:7bc0ab1a255412d4b68917",
-// };
-
-// if (!firebase.apps.length) {
-//   firebase.initializeApp(firebaseConfig);
-// }
-
-// const firestore = firebase.firestore();
 
 const servers: RTCConfiguration = {
   iceServers: [
@@ -63,11 +46,12 @@ const servers: RTCConfiguration = {
   iceCandidatePoolSize: 10,
 };
 
-const pc = new RTCPeerConnection(servers);
+
 let localStream: MediaStream | null = null;
 let remoteStream: MediaStream | null = null;
 
 const Meeting4: React.FC = () => {
+  const pc = useRef(new RTCPeerConnection(servers));
   const { callId, callInfo } = useParams();
   const callDetails = decryptVideoCallId(String(callInfo));
   const navigate = useNavigate();
@@ -77,49 +61,14 @@ const Meeting4: React.FC = () => {
     callDetails.type === "patient" ? callDetails.patient : callDetails.doctor
   );
 
-  //   const [dimensions, setDimensions] = useState({
-  //     height: window.innerHeight,
-  //     width: window.innerWidth,
-  //   });
-
-  //   const [callStatus, setCallStatus] = useState<"incoming" | "outgoing">(
-  //     "incoming"
-  //   );
-  //   const [connectionStatus, setConnectionStatus] = useState<
-  //     "initial" | "connected" | "connecting" | "disconnected"
-  //   >("initial");
   const [onCall, setOnCall] = useState<boolean>(false);
-  //   const [videoCamOn, setVideoCamOn] = useState<boolean>(true);
-  //   const [videoMicOn, setVideoMicOn] = useState<boolean>(true);
   const doctor = useRef<IDoctor | null>(null);
   const patient = useRef<IPatient | null>(null);
 
-  //   console.log("callStatus", callStatus);
-  //   console.log("connectionStatus", connectionStatus);
-
-  //   const [windowRecorder, setWindowRecorder] = useState<
-  //     RecordRTC | RecordRTCPromisesHandler | null
-  //   >(null);
-  //   const [localMediaRecorder, setLocalMediaRecorder] =
-  //     useState<MediaRecorder | null>(null);
-  //   const [remoteMediaRecorder, setRemoteMediaRecorder] =
-  //     useState<MediaRecorder | null>(null);
-  //   const [recordingChunks, setRecordingChunks] = useState<{
-  //     local: BlobPart[] | undefined;
-  //     remote: BlobPart[] | undefined;
-  //   }>();
-  //   const [streamChunks, setStreamChunks] = useState<{
-  //     local: string;
-  //     remote: string;
-  //   }>({
-  //     local: "",
-  //     remote: "",
-  //   });
-  //   const [streamSeconds, setStreamSeconds] = useState<number>(0);
   const socketPatient = useRef<WebSocket | null>(null);
   const socketDoctor = useRef<WebSocket | null>(null);
   const ws = useRef<WebSocket | null>(null);
-  //   const [bufferData, setBufferData] = useState<{ local: any; remote: any }>();
+
 
   console.log("calldetails", callDetails);
 
@@ -130,12 +79,12 @@ const Meeting4: React.FC = () => {
     ws.current!.send(JSON.stringify(data));
   };
   const handleOffer = async (offer: any) => {
-    pc.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
+    pc.current.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await pc.current.createAnswer();
+    await pc.current.setLocalDescription(answer);
     sendSignalingData({ type: "answer", answer, senderId: clientId.current });
     // setTimeout(() => {
-      pc.onicecandidate = (event) => {
+      pc.current.onicecandidate = (event) => {
         console.log("onicecandidate event patient", event);
 
         event.candidate &&
@@ -153,12 +102,12 @@ const Meeting4: React.FC = () => {
 
   const handleAnswer = (answer: any) => {
     
-    pc.setRemoteDescription(new RTCSessionDescription(answer));
+    pc.current.setRemoteDescription(new RTCSessionDescription(answer));
     console.log('handle answer was called', answer);
   };
 
   const handleNewICECandidateMsg = (candidate: any) => {
-    pc.addIceCandidate(new RTCIceCandidate(candidate));
+    pc.current.addIceCandidate(new RTCIceCandidate(candidate));
   };
 
   const handleSignalingData = (data: any) => {
@@ -185,10 +134,10 @@ const Meeting4: React.FC = () => {
         break;
       case "patientConnected":
         if (clientId.current !== data.senderId) {
-          pc.createOffer()
+          pc.current.createOffer()
             .then((offer) => {
               console.log("offer", offer);
-              pc.setLocalDescription(offer);
+              pc.current.setLocalDescription(offer);
               sendSignalingData({
                 type: "offer",
                 offer: offer,
@@ -199,7 +148,7 @@ const Meeting4: React.FC = () => {
               // Send the offer to the remote peer via the signaling server
             });
 
-          pc.onicecandidate = (event) => {
+          pc.current.onicecandidate = (event) => {
             event.candidate &&
               ws.current &&
               ws.current.send(
@@ -253,20 +202,6 @@ const Meeting4: React.FC = () => {
     };
   }, [callId]);
 
-  //   useEffect(() => {
-  //     const handleResize = () => {
-  //       setDimensions({
-  //         height: window.innerHeight,
-  //         width: window.innerWidth,
-  //       });
-  //     };
-
-  //     window.addEventListener("resize", handleResize);
-
-  //     return () => {
-  //       window.removeEventListener("resize", handleResize);
-  //     };
-  //   }, []);
   localStorage.setItem("key", JSON.stringify({ key: "value" }));
 
   const fetchDoctorData = async () => {
@@ -295,16 +230,6 @@ const Meeting4: React.FC = () => {
   }, [callId]);
 
   const handleWebcamButtonClick = async () => {
-    // const mediaStream = await navigator.mediaDevices.getDisplayMedia({
-    // 	video: {
-    // 	  displaySurface: "monitor", // Type assertion to any
-    // 	} as MediaTrackConstraints,
-    // 	audio: {
-    // 	  echoCancellation: true,
-    // 	  noiseSuppression: true,
-    // 	  sampleRate: 44100,
-    // 	},
-    //   });
 
     localStream = await navigator.mediaDevices.getUserMedia({
       video: true,
@@ -315,24 +240,11 @@ const Meeting4: React.FC = () => {
       webcamVideo.current.srcObject = localStream;
     }
     localStream.getTracks().forEach((track) => {
-      pc.addTrack(track, localStream!);
+      pc.current.addTrack(track, localStream!);
       console.log("local track is being added to track");
     });
 
-    // let options = { mimeType: "video/webm; codecs=vp9" };
-    // if (MediaRecorder.isTypeSupported("video/webm; codecs=vp9")) {
-    //   options = { mimeType: "video/webm; codecs=vp9" };
-    // } else if (MediaRecorder.isTypeSupported("video/webm")) {
-    //   options = { mimeType: "video/webm" };
-    // } else if (MediaRecorder.isTypeSupported("video/mp4")) {
-    //   options = { mimeType: "video/mp4" };
-    // } else {
-    // }
-
-    // const localMediaRecorde = new MediaRecorder(localStream, options);
-    // const remoteMediaRecorde = new MediaRecorder(remoteStream, options);
-
-    pc.ontrack = (event) => {
+    pc.current.ontrack = (event) => {
       console.log("ontrack event", event);
       event.streams[0].getTracks().forEach((track) => {
         console.log("adding remotetrack", track);
@@ -355,40 +267,6 @@ const Meeting4: React.FC = () => {
       patient_id: callDetails.patient,
       type: "patient",
     });
-    // const callDoc = firestore.collection("calls").doc(callId);
-    // const offerCandidates = callDoc.collection("offerCandidates");
-    // const answerCandidates = callDoc.collection("answerCandidates");
-
-    // const offer = {
-    //   sdp: offerDescription.sdp,
-    //   type: offerDescription.type,
-    // };
-
-    // ws.send()
-
-    // callDoc.onSnapshot((snapshot) => {
-    //   const data = snapshot.data();
-    //   if (!pc.currentRemoteDescription && data?.answer) {
-    //     const answerDescription = new RTCSessionDescription(data.answer);
-    //     pc.setRemoteDescription(answerDescription);
-    //   }
-    // });
-
-    // answerCandidates.onSnapshot((snapshot) => {
-    //   snapshot.docChanges().forEach(async (change) => {
-    //     if (change.type === "added") {
-    //       const candidateData = change.doc.data();
-    //       console.log("Received ICE candidate data:", candidateData);
-
-    //       const candidate = new RTCIceCandidate(candidateData);
-    //       if (pc.remoteDescription) {
-    //         await pc.addIceCandidate(candidate).catch((error) => {
-    //           console.error("Error adding ICE candidate:", error);
-    //         });
-    //       }
-    //     }
-    //   });
-    // });
 
     console.log("[Calling...]");
   };
@@ -404,47 +282,7 @@ const Meeting4: React.FC = () => {
   };
 
   const handleAnswerCall = async () => {
-    // const callDoc = firestore.collection("calls").doc(callId);
-    // const answerCandidates = callDoc.collection("answerCandidates");
-    // const offerCandidates = callDoc.collection("offerCandidates");
-    // const callData = (await callDoc.get()).data();
-    // const offerDescription = callData?.offer;
-    // if (offerDescription) {
-    //   console.log("offerDescription", offerDescription);
-    //   await pc.setRemoteDescription(
-    //     new RTCSessionDescription(offerDescription)
-    //   );
-    // }
-    // Check if remoteDescription is set before proceeding
-    // if (pc.remoteDescription) {
-    //   const answerDescription = await pc.createAnswer();
-    //   await pc.setLocalDescription(answerDescription);
-    //   sendSignalingData({
-    //     type: "answer",
-    //     answer: pc.localDescription,
-    //     senderId: clientId.current,
-    //   });
-    //   console.log("sent answerDescription", answerDescription);
-    //   const answer = {
-    //     type: answerDescription.type,
-    //     sdp: answerDescription.sdp,
-    //   };
-    //   await callDoc.update({ answer });
-    //   offerCandidates.onSnapshot((snapshot) => {
-    //     snapshot.docChanges().forEach(async (change) => {
-    //       if (change.type === "added") {
-    //         const data = change.doc.data();
-    //         if (pc.remoteDescription) {
-    //           await pc
-    //             .addIceCandidate(new RTCIceCandidate(data))
-    //             .catch((error) => {
-    //               console.error("Error adding ICE candidate:", error);
-    //             });
-    //         }
-    //       }
-    //     });
-    //   });
-    // }
+
   };
   console.log("websocket", ws.current);
 
@@ -465,11 +303,11 @@ const Meeting4: React.FC = () => {
     });
   };
 
-  pc.oniceconnectionstatechange = (e) => {
+  pc.current.oniceconnectionstatechange = (e) => {
     const connection = e.target as RTCPeerConnection;
 
     if (connection.iceConnectionState === "disconnected") {
-      handleHangupButtonClick();
+      // handleHangupButtonClick();
       //   stopRecording();
     } else if (connection.iceConnectionState === "checking") {
       //   setConnectionStatus("connecting");
@@ -483,78 +321,44 @@ const Meeting4: React.FC = () => {
     console.log("[Connection Status]", connection.iceConnectionState);
   };
 
-  const handleHangupButtonClick = () => {
-    // stopRecording();
-    setOnCall(false);
+  // const handleHangupButtonClick = () => {
+  //   // stopRecording();
+  //   setOnCall(false);
 
-    if (socketPatient.current && socketDoctor.current) {
-      socketDoctor.current.close();
-      socketPatient.current.close();
-    }
+  //   if (socketPatient.current && socketDoctor.current) {
+  //     socketDoctor.current.close();
+  //     socketPatient.current.close();
+  //   }
 
-    if (localStream) {
-      localStream.getTracks().forEach((track) => {
-        track.stop();
-        localStream?.removeTrack(track);
-      });
-    }
+  //   if (localStream) {
+  //     localStream.getTracks().forEach((track) => {
+  //       track.stop();
+  //       localStream?.removeTrack(track);
+  //     });
+  //   }
 
-    if (remoteStream) {
-      remoteStream.getTracks().forEach((track) => {
-        track.stop();
-        remoteStream?.removeTrack(track);
-      });
-    }
+  //   if (remoteStream) {
+  //     remoteStream.getTracks().forEach((track) => {
+  //       track.stop();
+  //       remoteStream?.removeTrack(track);
+  //     });
+  //   }
 
-    if (webcamVideo.current) {
-      webcamVideo.current.srcObject = null;
-    }
+  //   if (webcamVideo.current) {
+  //     webcamVideo.current.srcObject = null;
+  //   }
 
-    if (remoteVideo.current) {
-      remoteVideo.current.srcObject = null;
-    }
+  //   if (remoteVideo.current) {
+  //     remoteVideo.current.srcObject = null;
+  //   }
 
-    pc.close();
+  //   pc.current.close();
 
-    // if (isDoctor) {
-    //   setConnectionStatus("disconnected");
-    //   createPatientResult();
-    // }
-    // if (isPatient) {
-    //   setConnectionStatus("disconnected");
-    //   navigate("/rating", {
-    //     state: {
-    //       doctor:doctor.current,
-    //     },
-    //   });
-    // }
+  //   if (callId) {
+  //     endCall(callId);
+  //   }
+  // };
 
-    if (callId) {
-      endCall(callId);
-    }
-  };
-
-  //   const handleVideoCam = () => {
-  //     if (localStream) {
-  //       const videoTracks = localStream.getVideoTracks();
-  //       if (videoTracks.length > 0) {
-  //         // Toggle video track
-  //         videoTracks[0].enabled = !videoCamOn;
-  //         setVideoCamOn(!videoCamOn);
-  //       }
-  //     }
-  //   };
-
-  //   const handleVideoMic = () => {
-  //     if (localStream) {
-  //       const audioTracks = localStream.getAudioTracks();
-  //       if (audioTracks.length > 0) {
-  //         // Toggle audio track
-  //         audioTracks[0].enabled = !videoMicOn;
-  //         setVideoMicOn(!videoMicOn);
-  //       }
-  //     }
-  //   };
 
   useEffect(() => {
     socketDoctor.current = new WebSocket(
@@ -575,125 +379,6 @@ const Meeting4: React.FC = () => {
     // setSocketPatient(socketPatient);
   }, [callId]);
 
-  // useEffect(() => {
-  //   if (window.performance) {
-  //     if (performance.navigation.type == 1) {
-  //       if (callId) {
-  //         endCall(callId);
-  //       }
-  //     }
-  //   }
-  // }, [])
-
-  //   const startRecording = () => {
-  //     console.log("[Recording started...]");
-  //     if (localMediaRecorder && remoteMediaRecorder) {
-  //       localMediaRecorder.ondataavailable = async (e) => {
-  //         const blob = new Blob([e.data], {
-  //           type: "video/webm",
-  //         });
-  //         const reader = new FileReader();
-
-  //         reader.onload = function (event) {
-  //           const audioDataArrayBuffer = event.target?.result;
-  //           if (audioDataArrayBuffer) {
-  //             socketDoctor.current?.send(audioDataArrayBuffer);
-  //           }
-  //         };
-
-  //         // Read the contents of the Blob as ArrayBuffer
-  //         reader.readAsArrayBuffer(blob);
-
-  //         const url = URL.createObjectURL(blob);
-  //         console.log("URL", url);
-
-  //         // setRecordingChunks((prevChunks) => {
-  //         //   const updatedChunks = {
-  //         //     local: prevChunks?.local ? [...prevChunks.local, e.data] : [e.data],
-  //         //     remote: prevChunks?.remote,
-  //         //   };
-  //         //   return updatedChunks;
-  //         // });
-
-  //         // const streamChunk = await e.data.text();
-  //         // setStreamChunks((prevChunks) => {
-  //         //   const updatedChunks = {
-  //         //     local: prevChunks.local + streamChunk,
-  //         //     remote: prevChunks.remote,
-  //         //   };
-  //         //   return updatedChunks;
-  //         // });
-  //       };
-
-  //       remoteMediaRecorder.ondataavailable = async (e) => {
-  //         const blob = new Blob([e.data], {
-  //           type: "video/webm",
-  //         });
-  //         console.log("Blob", blob);
-
-  //         const reader = new FileReader();
-  //         console.log("Reader", reader);
-
-  //         reader.onload = function (event) {
-  //           const audioDataArrayBuffer = event.target?.result;
-  //           if (audioDataArrayBuffer) {
-  //             socketPatient.current?.send(audioDataArrayBuffer);
-  //           }
-  //         };
-
-  //         // Read the contents of the Blob as ArrayBuffer
-  //         reader.readAsArrayBuffer(blob);
-
-  //         const url = URL.createObjectURL(blob);
-  //         console.log("URL", url);
-
-  //         // setRecordingChunks((prevChunks) => {
-  //         //   const updatedChunks = {
-  //         //     local: prevChunks?.local,
-  //         //     remote: prevChunks?.remote
-  //         //       ? [...prevChunks.remote, e.data]
-  //         //       : [e.data],
-  //         //   };
-  //         //   return updatedChunks;
-  //         // });
-
-  //         // const streamChunk = await e.data.text();
-  //         // setStreamChunks((prevChunks) => {
-  //         //   const updatedChunks = {
-  //         //     local: prevChunks.local,
-  //         //     remote: prevChunks.remote + streamChunk,
-  //         //   };
-  //         //   return updatedChunks;
-  //         // });
-  //       };
-
-  //       if (isDoctor) {
-  //         localMediaRecorder.start(1000);
-  //         remoteMediaRecorder.start(1000);
-  //       }
-  //       // setInterval(() => {
-  //       //   setStreamSeconds((prev) => prev + 1);
-  //       // }, 1000);
-  //     }
-  //   };
-
-  //   const stopRecording = async () => {
-  //     localMediaRecorder?.stop();
-  //     remoteMediaRecorder?.stop();
-  //     const res = windowRecorder?.stopRecording(() => {
-  //       console.log(windowRecorder.getBlob());
-  //     });
-  //     console.log("[Result]", res);
-
-  //     const localBlob = new Blob(recordingChunks?.local, { type: "video/webm" });
-  //     const remoteBlob = new Blob(recordingChunks?.remote, {
-  //       type: "video/webm",
-  //     });
-
-  //     // Create data URLs from blobs
-  //     const localUrl = URL.createObjectURL(localBlob);
-  //     const remoteUrl = URL.createObjectURL(remoteBlob);
-  //   };
   console.log("remoteVideo", remoteVideo);
   console.log("localVideo", webcamVideo);
 
@@ -888,7 +573,7 @@ const Meeting4: React.FC = () => {
 
             <IconButton
               sx={{ backgroundColor: "red" }}
-              onClick={handleHangupButtonClick}
+              // onClick={handleHangupButtonClick}
               disabled={!isPatient && !(isDoctor && onCall)}
             >
               <CallEndRounded />
