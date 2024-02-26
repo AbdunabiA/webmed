@@ -171,6 +171,8 @@ const Meeting4: React.FC = () => {
 
         break;
       case "answer":
+        console.log('answer is in the case', data);
+        
         if (callDetails.type === "doctor") {
           handleAnswer(data.answer);
           console.log("handled answer", data.answer);
