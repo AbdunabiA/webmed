@@ -234,7 +234,7 @@ const Meeting4: React.FC = () => {
 
     localStream = await navigator.mediaDevices.getUserMedia({
       video: true,
-      // audio: true,
+      audio: true,
     });
     setLocalStreamm(localStream)
     remoteStream = new MediaStream();
@@ -293,6 +293,8 @@ const Meeting4: React.FC = () => {
   console.log("websocket", ws.current);
 
   const handleAnswerButtonClick = () => {
+    console.log('handleAnswerButtonClick function called');
+    
     setOnCall(true);
     handleWebcamButtonClick();
     setTimeout(() => {
@@ -587,7 +589,7 @@ const Meeting4: React.FC = () => {
           </ButtonGroup>
         </Box>
         {/* )} */}
-        {onCall && (
+        {/* {onCall && ( */}
           <video
             width={100}
             height={150}
@@ -603,7 +605,7 @@ const Meeting4: React.FC = () => {
             autoPlay
             playsInline
           ></video>
-        )}
+        {/* )} */}
       </Paper>
     </div>
   );
