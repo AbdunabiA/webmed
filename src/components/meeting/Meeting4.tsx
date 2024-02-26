@@ -67,21 +67,22 @@ const pc = new RTCPeerConnection(servers);
 let localStream: MediaStream | null = null;
 let remoteStream: MediaStream | null = null;
 
-const Meeting2: React.FC = () => {
+const Meeting4: React.FC = () => {
   const { callId, callInfo } = useParams();
   const callDetails = decryptVideoCallId(String(callInfo));
   const navigate = useNavigate();
   const webcamVideo = useRef<HTMLVideoElement>(null);
   const remoteVideo = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const clientId = useRef(
     callDetails.type === "patient" ? callDetails.patient : callDetails.doctor
   );
 
-  const [dimensions, setDimensions] = useState({
-    height: window.innerHeight,
-    width: window.innerWidth,
-  });
+//   const [dimensions, setDimensions] = useState({
+//     height: window.innerHeight,
+//     width: window.innerWidth,
+//   });
+
+
   const [callStatus, setCallStatus] = useState<"incoming" | "outgoing">(
     "incoming"
   );
@@ -89,135 +90,135 @@ const Meeting2: React.FC = () => {
     "initial" | "connected" | "connecting" | "disconnected"
   >("initial");
   const [onCall, setOnCall] = useState<boolean>(false);
-  const [videoCamOn, setVideoCamOn] = useState<boolean>(true);
-  const [videoMicOn, setVideoMicOn] = useState<boolean>(true);
-  const [doctor, setDoctor] = useState<IDoctor>();
-  const [patient, setPatient] = useState<IPatient>();
+//   const [videoCamOn, setVideoCamOn] = useState<boolean>(true);
+//   const [videoMicOn, setVideoMicOn] = useState<boolean>(true);
+  const doctor = useRef<IDoctor | null>(null);
+  const patient = useRef<IPatient | null>(null);
 
   console.log("callStatus", callStatus);
   console.log("connectionStatus", connectionStatus);
 
-  const [windowRecorder, setWindowRecorder] = useState<
-    RecordRTC | RecordRTCPromisesHandler | null
-  >(null);
-  const [localMediaRecorder, setLocalMediaRecorder] =
-    useState<MediaRecorder | null>(null);
-  const [remoteMediaRecorder, setRemoteMediaRecorder] =
-    useState<MediaRecorder | null>(null);
-  const [recordingChunks, setRecordingChunks] = useState<{
-    local: BlobPart[] | undefined;
-    remote: BlobPart[] | undefined;
-  }>();
-  const [streamChunks, setStreamChunks] = useState<{
-    local: string;
-    remote: string;
-  }>({
-    local: "",
-    remote: "",
-  });
-  const [streamSeconds, setStreamSeconds] = useState<number>(0);
-  const [socketPatient, setSocketPatient] = useState<WebSocket>();
-  const [socketDoctor, setSocketDoctor] = useState<WebSocket>();
+//   const [windowRecorder, setWindowRecorder] = useState<
+//     RecordRTC | RecordRTCPromisesHandler | null
+//   >(null);
+//   const [localMediaRecorder, setLocalMediaRecorder] =
+//     useState<MediaRecorder | null>(null);
+//   const [remoteMediaRecorder, setRemoteMediaRecorder] =
+//     useState<MediaRecorder | null>(null);
+//   const [recordingChunks, setRecordingChunks] = useState<{
+//     local: BlobPart[] | undefined;
+//     remote: BlobPart[] | undefined;
+//   }>();
+//   const [streamChunks, setStreamChunks] = useState<{
+//     local: string;
+//     remote: string;
+//   }>({
+//     local: "",
+//     remote: "",
+//   });
+//   const [streamSeconds, setStreamSeconds] = useState<number>(0);
+  const socketPatient = useRef<WebSocket | null>(null);
+  const socketDoctor = useRef<WebSocket | null>(null);
   const ws = useRef<WebSocket | null>(null);
-  const [bufferData, setBufferData] = useState<{ local: any; remote: any }>();
-
-
+//   const [bufferData, setBufferData] = useState<{ local: any; remote: any }>();
 
   console.log("calldetails", callDetails);
 
   const isPatient = callDetails.type === "patient";
   const isDoctor = callDetails.type === "doctor";
 
-    const sendSignalingData = (data: any) => {
-      ws.current!.send(JSON.stringify(data));
-    };
-    const handleOffer = async (offer: any) => {
-      pc.setRemoteDescription(new RTCSessionDescription(offer));
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-      sendSignalingData({ type: "answer", answer, senderId: clientId.current });
-    };
+  const sendSignalingData = (data: any) => {
+    ws.current!.send(JSON.stringify(data));
+  };
+  const handleOffer = async (offer: any) => {
+    pc.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    sendSignalingData({ type: "answer", answer, senderId: clientId.current });
+  };
 
-    const handleAnswer = (answer: any) => {
-      pc.setRemoteDescription(new RTCSessionDescription(answer));
-    };
+  const handleAnswer = (answer: any) => {
+    pc.setRemoteDescription(new RTCSessionDescription(answer));
+  };
 
-    const handleNewICECandidateMsg = (candidate: any) => {
-      pc.addIceCandidate(new RTCIceCandidate(candidate));
-    };
+  const handleNewICECandidateMsg = (candidate: any) => {
+    pc.addIceCandidate(new RTCIceCandidate(candidate));
+  };
 
-    const handleSignalingData = (data: any) => {
-      switch (data.type) {
-        case "offer":
-          if (callDetails.type === "patient") {
-            handleOffer(data.offer);
-            console.log("handled offer", data.offer);
-          }
+  const handleSignalingData = (data: any) => {
+    switch (data.type) {
+      case "offer":
+        if (callDetails.type === "patient") {
+          handleOffer(data.offer);
+          console.log("handled offer", data.offer);
+        }
 
-          break;
-        case "answer":
-          if (callDetails.type === "doctor") {
-            handleAnswer(data.answer);
-            console.log("handled answer", data.answer);
-          }
+        break;
+      case "answer":
+        if (callDetails.type === "doctor") {
+          handleAnswer(data.answer);
+          console.log("handled answer", data.answer);
+        }
 
-          break;
-        case "candidate":
-          if (clientId.current !== data.senderId) {
-            handleNewICECandidateMsg(data.candidate);
-            console.log("handled candidate", data.candidate);
-          }
-          break;
-        case "patientConnected":
-          if (clientId.current !== data.senderId){
-            pc.createOffer()
-              .then((offer) => {
-                console.log("offer", offer);
-                pc.setLocalDescription(offer);
-                sendSignalingData({
-                  type: "offer",
-                  offer: offer,
-                  senderId: clientId.current,
-                });
-              })
-              .then(() => {
-                // Send the offer to the remote peer via the signaling server
-                
-
-                
+        break;
+      case "candidate":
+        if (clientId.current !== data.senderId) {
+          handleNewICECandidateMsg(data.candidate);
+          console.log("handled candidate", data.candidate);
+        }
+        break;
+      case "patientConnected":
+        if (clientId.current !== data.senderId) {
+          pc.createOffer()
+            .then((offer) => {
+              console.log("offer", offer);
+              pc.setLocalDescription(offer);
+              sendSignalingData({
+                type: "offer",
+                offer: offer,
+                senderId: clientId.current,
               });
+            })
+            .then(() => {
+              // Send the offer to the remote peer via the signaling server
+            });
 
-              pc.onicecandidate = (event) => {
-                event.candidate &&
-                  ws.current &&
-                  ws.current.send(
-                    JSON.stringify({
-                      type: "candidate",
-                      candidate: event.candidate,
-                      senderId: clientId.current,
-                    })
-                  );
-              };
-          }
-          break;
-        default:
-          break;
-      }
-    };
+          pc.onicecandidate = (event) => {
+            event.candidate &&
+              ws.current &&
+              ws.current.send(
+                JSON.stringify({
+                  type: "candidate",
+                  candidate: event.candidate,
+                  senderId: clientId.current,
+                })
+              );
+          };
+        }
+        break;
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
     // Initialize WebSocket connection
     const socket = new WebSocket(`${WEBSOCKET_API}video/${callId}/`);
     console.log("WEBSOCKET CONST", socket);
 
-    ws.current = socket
+    ws.current = socket;
     // if(ws){
 
     socket.onopen = () => {
       console.log("WebSocket connection established");
       // Send a message or join a room if your server requires it
-      if(callDetails.type === 'patient'){
-        socket.send(JSON.stringify({ type: "patientConnected", senderId : clientId.current}));
+      if (callDetails.type === "patient") {
+        socket.send(
+          JSON.stringify({
+            type: "patientConnected",
+            senderId: clientId.current,
+          })
+        );
       }
     };
     socket.onmessage = (message) => {
@@ -236,27 +237,25 @@ const Meeting2: React.FC = () => {
     };
   }, [callId]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setDimensions({
-        height: window.innerHeight,
-        width: window.innerWidth,
-      });
-    };
+//   useEffect(() => {
+//     const handleResize = () => {
+//       setDimensions({
+//         height: window.innerHeight,
+//         width: window.innerWidth,
+//       });
+//     };
 
-    window.addEventListener("resize", handleResize);
+//     window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-
+//     return () => {
+//       window.removeEventListener("resize", handleResize);
+//     };
+//   }, []);
 
   const fetchDoctorData = async () => {
     try {
-      const data = await getDoctor(callDetails.doctor);
-      setDoctor(data);
+      doctor.current = await getDoctor(callDetails.doctor);
+
     } catch (error: any) {
       console.error(error.message);
     }
@@ -264,8 +263,7 @@ const Meeting2: React.FC = () => {
 
   const fetchPatientData = async () => {
     try {
-      const data = await getPatient(callDetails.patient);
-      setPatient(data);
+      patient.current = await getPatient(callDetails.patient);
     } catch (error: any) {
       console.error(error.message);
     }
@@ -330,8 +328,8 @@ const Meeting2: React.FC = () => {
       remoteVideo.current.srcObject = remoteStream;
     }
 
-    setLocalMediaRecorder(localMediaRecorde);
-    setRemoteMediaRecorder(remoteMediaRecorde);
+    // setLocalMediaRecorder(localMediaRecorde);
+    // setRemoteMediaRecorder(remoteMediaRecorde);
   };
 
   const handleCall = async () => {
@@ -343,10 +341,6 @@ const Meeting2: React.FC = () => {
     // const callDoc = firestore.collection("calls").doc(callId);
     // const offerCandidates = callDoc.collection("offerCandidates");
     // const answerCandidates = callDoc.collection("answerCandidates");
-
-    
-
-    
 
     // const offer = {
     //   sdp: offerDescription.sdp,
@@ -420,7 +414,7 @@ const Meeting2: React.FC = () => {
 
       pc.onicecandidate = (event) => {
         console.log("onicecandidate event", event);
-        
+
         event.candidate &&
           ws.current &&
           ws.current.send(
@@ -455,14 +449,14 @@ const Meeting2: React.FC = () => {
       //   });
     }
   };
-  console.log('websocket',ws.current);
-  
+  console.log("websocket", ws.current);
+
   const handleAnswerButtonClick = () => {
     setOnCall(true);
     handleWebcamButtonClick();
     setTimeout(() => {
       handleAnswerCall();
-    }, 5000);
+    }, 2000);
   };
 
   const createPatientResult = () => {
@@ -476,26 +470,27 @@ const Meeting2: React.FC = () => {
 
   pc.oniceconnectionstatechange = (e) => {
     const connection = e.target as RTCPeerConnection;
+    
     if (connection.iceConnectionState === "disconnected") {
       handleHangupButtonClick();
-      stopRecording();
+    //   stopRecording();
     } else if (connection.iceConnectionState === "checking") {
       setConnectionStatus("connecting");
     } else if (connection.iceConnectionState === "connected") {
       setConnectionStatus("connected");
-      startRecording();
+    //   startRecording();
     }
 
     console.log("[Connection Status]", connection.iceConnectionState);
   };
 
   const handleHangupButtonClick = () => {
-    stopRecording();
+    // stopRecording();
     setOnCall(false);
 
-    if (socketPatient && socketDoctor) {
-      socketDoctor.close();
-      socketPatient.close();
+    if (socketPatient.current && socketDoctor.current) {
+      socketDoctor.current.close();
+      socketPatient.current.close();
     }
 
     if (localStream) {
@@ -530,7 +525,7 @@ const Meeting2: React.FC = () => {
       setConnectionStatus("disconnected");
       navigate("/rating", {
         state: {
-          doctor,
+          doctor:doctor.current,
         },
       });
     }
@@ -540,45 +535,45 @@ const Meeting2: React.FC = () => {
     }
   };
 
-  const handleVideoCam = () => {
-    if (localStream) {
-      const videoTracks = localStream.getVideoTracks();
-      if (videoTracks.length > 0) {
-        // Toggle video track
-        videoTracks[0].enabled = !videoCamOn;
-        setVideoCamOn(!videoCamOn);
-      }
-    }
-  };
+//   const handleVideoCam = () => {
+//     if (localStream) {
+//       const videoTracks = localStream.getVideoTracks();
+//       if (videoTracks.length > 0) {
+//         // Toggle video track
+//         videoTracks[0].enabled = !videoCamOn;
+//         setVideoCamOn(!videoCamOn);
+//       }
+//     }
+//   };
 
-  const handleVideoMic = () => {
-    if (localStream) {
-      const audioTracks = localStream.getAudioTracks();
-      if (audioTracks.length > 0) {
-        // Toggle audio track
-        audioTracks[0].enabled = !videoMicOn;
-        setVideoMicOn(!videoMicOn);
-      }
-    }
-  };
+//   const handleVideoMic = () => {
+//     if (localStream) {
+//       const audioTracks = localStream.getAudioTracks();
+//       if (audioTracks.length > 0) {
+//         // Toggle audio track
+//         audioTracks[0].enabled = !videoMicOn;
+//         setVideoMicOn(!videoMicOn);
+//       }
+//     }
+//   };
 
   useEffect(() => {
-    const socketDoctor = new WebSocket(
+    socketDoctor.current = new WebSocket(
       `wss://telecure.ru/ws/meeting-doctor/${callId}/`
     );
 
-    socketDoctor.onopen = () => {
+    socketDoctor.current.onopen = () => {
       console.log("[WebSocket connection established]");
     };
-    setSocketDoctor(socketDoctor);
-    const socketPatient = new WebSocket(
+    // setSocketDoctor(socketDoctor);
+    socketPatient.current = new WebSocket(
       `wss://telecure.ru/ws/meeting-patient/${callId}/`
     );
 
-    socketPatient.onopen = () => {
+    socketPatient.current.onopen = () => {
       console.log("[WebSocket connection established]");
     };
-    setSocketPatient(socketPatient);
+    // setSocketPatient(socketPatient);
   }, [callId]);
 
   // useEffect(() => {
@@ -591,115 +586,115 @@ const Meeting2: React.FC = () => {
   //   }
   // }, [])
 
-  const startRecording = () => {
-    console.log("[Recording started...]");
-    if (localMediaRecorder && remoteMediaRecorder) {
-      localMediaRecorder.ondataavailable = async (e) => {
-        const blob = new Blob([e.data], {
-          type: "video/webm",
-        });
-        const reader = new FileReader();
+//   const startRecording = () => {
+//     console.log("[Recording started...]");
+//     if (localMediaRecorder && remoteMediaRecorder) {
+//       localMediaRecorder.ondataavailable = async (e) => {
+//         const blob = new Blob([e.data], {
+//           type: "video/webm",
+//         });
+//         const reader = new FileReader();
 
-        reader.onload = function (event) {
-          const audioDataArrayBuffer = event.target?.result;
-          if (audioDataArrayBuffer) {
-            socketDoctor?.send(audioDataArrayBuffer);
-          }
-        };
+//         reader.onload = function (event) {
+//           const audioDataArrayBuffer = event.target?.result;
+//           if (audioDataArrayBuffer) {
+//             socketDoctor.current?.send(audioDataArrayBuffer);
+//           }
+//         };
 
-        // Read the contents of the Blob as ArrayBuffer
-        reader.readAsArrayBuffer(blob);
+//         // Read the contents of the Blob as ArrayBuffer
+//         reader.readAsArrayBuffer(blob);
 
-        const url = URL.createObjectURL(blob);
-        console.log("URL", url);
+//         const url = URL.createObjectURL(blob);
+//         console.log("URL", url);
 
-        // setRecordingChunks((prevChunks) => {
-        //   const updatedChunks = {
-        //     local: prevChunks?.local ? [...prevChunks.local, e.data] : [e.data],
-        //     remote: prevChunks?.remote,
-        //   };
-        //   return updatedChunks;
-        // });
+//         // setRecordingChunks((prevChunks) => {
+//         //   const updatedChunks = {
+//         //     local: prevChunks?.local ? [...prevChunks.local, e.data] : [e.data],
+//         //     remote: prevChunks?.remote,
+//         //   };
+//         //   return updatedChunks;
+//         // });
 
-        // const streamChunk = await e.data.text();
-        // setStreamChunks((prevChunks) => {
-        //   const updatedChunks = {
-        //     local: prevChunks.local + streamChunk,
-        //     remote: prevChunks.remote,
-        //   };
-        //   return updatedChunks;
-        // });
-      };
+//         // const streamChunk = await e.data.text();
+//         // setStreamChunks((prevChunks) => {
+//         //   const updatedChunks = {
+//         //     local: prevChunks.local + streamChunk,
+//         //     remote: prevChunks.remote,
+//         //   };
+//         //   return updatedChunks;
+//         // });
+//       };
 
-      remoteMediaRecorder.ondataavailable = async (e) => {
-        const blob = new Blob([e.data], {
-          type: "video/webm",
-        });
-        console.log("Blob", blob);
+//       remoteMediaRecorder.ondataavailable = async (e) => {
+//         const blob = new Blob([e.data], {
+//           type: "video/webm",
+//         });
+//         console.log("Blob", blob);
 
-        const reader = new FileReader();
-        console.log("Reader", reader);
+//         const reader = new FileReader();
+//         console.log("Reader", reader);
 
-        reader.onload = function (event) {
-          const audioDataArrayBuffer = event.target?.result;
-          if (audioDataArrayBuffer) {
-            socketPatient?.send(audioDataArrayBuffer);
-          }
-        };
+//         reader.onload = function (event) {
+//           const audioDataArrayBuffer = event.target?.result;
+//           if (audioDataArrayBuffer) {
+//             socketPatient.current?.send(audioDataArrayBuffer);
+//           }
+//         };
 
-        // Read the contents of the Blob as ArrayBuffer
-        reader.readAsArrayBuffer(blob);
+//         // Read the contents of the Blob as ArrayBuffer
+//         reader.readAsArrayBuffer(blob);
 
-        const url = URL.createObjectURL(blob);
-        console.log("URL", url);
+//         const url = URL.createObjectURL(blob);
+//         console.log("URL", url);
 
-        // setRecordingChunks((prevChunks) => {
-        //   const updatedChunks = {
-        //     local: prevChunks?.local,
-        //     remote: prevChunks?.remote
-        //       ? [...prevChunks.remote, e.data]
-        //       : [e.data],
-        //   };
-        //   return updatedChunks;
-        // });
+//         // setRecordingChunks((prevChunks) => {
+//         //   const updatedChunks = {
+//         //     local: prevChunks?.local,
+//         //     remote: prevChunks?.remote
+//         //       ? [...prevChunks.remote, e.data]
+//         //       : [e.data],
+//         //   };
+//         //   return updatedChunks;
+//         // });
 
-        // const streamChunk = await e.data.text();
-        // setStreamChunks((prevChunks) => {
-        //   const updatedChunks = {
-        //     local: prevChunks.local,
-        //     remote: prevChunks.remote + streamChunk,
-        //   };
-        //   return updatedChunks;
-        // });
-      };
+//         // const streamChunk = await e.data.text();
+//         // setStreamChunks((prevChunks) => {
+//         //   const updatedChunks = {
+//         //     local: prevChunks.local,
+//         //     remote: prevChunks.remote + streamChunk,
+//         //   };
+//         //   return updatedChunks;
+//         // });
+//       };
 
-      if (isDoctor) {
-        localMediaRecorder.start(1000);
-        remoteMediaRecorder.start(1000);
-      }
-      // setInterval(() => {
-      //   setStreamSeconds((prev) => prev + 1);
-      // }, 1000);
-    }
-  };
+//       if (isDoctor) {
+//         localMediaRecorder.start(1000);
+//         remoteMediaRecorder.start(1000);
+//       }
+//       // setInterval(() => {
+//       //   setStreamSeconds((prev) => prev + 1);
+//       // }, 1000);
+//     }
+//   };
 
-  const stopRecording = async () => {
-    localMediaRecorder?.stop();
-    remoteMediaRecorder?.stop();
-    const res = windowRecorder?.stopRecording(() => {
-      console.log(windowRecorder.getBlob());
-    });
-    console.log("[Result]", res);
+//   const stopRecording = async () => {
+//     localMediaRecorder?.stop();
+//     remoteMediaRecorder?.stop();
+//     const res = windowRecorder?.stopRecording(() => {
+//       console.log(windowRecorder.getBlob());
+//     });
+//     console.log("[Result]", res);
 
-    const localBlob = new Blob(recordingChunks?.local, { type: "video/webm" });
-    const remoteBlob = new Blob(recordingChunks?.remote, {
-      type: "video/webm",
-    });
+//     const localBlob = new Blob(recordingChunks?.local, { type: "video/webm" });
+//     const remoteBlob = new Blob(recordingChunks?.remote, {
+//       type: "video/webm",
+//     });
 
-    // Create data URLs from blobs
-    const localUrl = URL.createObjectURL(localBlob);
-    const remoteUrl = URL.createObjectURL(remoteBlob);
-  };
+//     // Create data URLs from blobs
+//     const localUrl = URL.createObjectURL(localBlob);
+//     const remoteUrl = URL.createObjectURL(remoteBlob);
+//   };
   console.log("remoteVideo", remoteVideo);
   console.log("localVideo", webcamVideo);
 
@@ -717,8 +712,8 @@ const Meeting2: React.FC = () => {
         <video
           style={{
             objectFit: "cover",
-            height: `${dimensions.height}px`,
-            width: `${dimensions.width}px`,
+            height: `100vh`,
+            width: `100%`,
             margin: 0,
             borderRadius: "10px",
           }}
@@ -766,7 +761,7 @@ const Meeting2: React.FC = () => {
               ></source>
             </audio>
             <img
-              src={"https://telecure.ru" + doctor?.avatar}
+              src={"https://telecure.ru" + doctor.current?.avatar}
               alt="Doctor"
               style={{
                 width: "150px",
@@ -775,8 +770,8 @@ const Meeting2: React.FC = () => {
               }}
             />
             <br />
-            <h3 style={{ margin: 0 }}>{doctor?.full_name}</h3>
-            <p style={{ margin: 0 }}>{doctor?.direction}</p>
+            <h3 style={{ margin: 0 }}>{doctor.current?.full_name}</h3>
+            <p style={{ margin: 0 }}>{doctor.current?.direction}</p>
 
             <Typography variant="caption">is calling....</Typography>
           </Box>
@@ -804,12 +799,12 @@ const Meeting2: React.FC = () => {
               }}
             >
               <Typography variant="h4">
-                {patient?.full_name.split(" ")[0][0]}
-                {patient?.full_name.split(" ")[1][0]}
+                {patient.current?.full_name.split(" ")[0][0]}
+                {patient.current?.full_name.split(" ")[1][0]}
               </Typography>
             </Avatar>
             <br />
-            <h3 style={{ margin: 0 }}>{patient?.full_name}</h3>
+            <h3 style={{ margin: 0 }}>{patient.current?.full_name}</h3>
             {/* <p style={{ margin: 0 }}>{doctor?.direction}</p> */}
 
             {/* <Typography variant="caption">
@@ -869,7 +864,7 @@ const Meeting2: React.FC = () => {
                   ></source>
                 </audio>
               )}
-              {onCall && (
+              {/* {onCall && (
                 <>
                   <IconButton
                     sx={{
@@ -890,7 +885,7 @@ const Meeting2: React.FC = () => {
                     {videoMicOn ? <Mic /> : <MicOff />}
                   </IconButton>
                 </>
-              )}
+              )} */}
 
               <IconButton
                 sx={{ backgroundColor: "red" }}
@@ -904,8 +899,8 @@ const Meeting2: React.FC = () => {
         )}
         {onCall && (
           <video
-            width={dimensions.width / 4}
-            height={dimensions.width / 3}
+            width={100}
+            height={250}
             style={{
               position: "fixed",
               bottom: "90px",
@@ -924,4 +919,4 @@ const Meeting2: React.FC = () => {
   );
 };
 
-export default Meeting2;
+export default Meeting4;
