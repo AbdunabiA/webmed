@@ -383,7 +383,7 @@ const Meeting4: React.FC = () => {
 
     setTimeout(() => {
       handleCall();
-    }, 5000);
+    }, 1000);
   };
 
   const handleAnswerCall = async () => {
@@ -563,7 +563,7 @@ const Meeting4: React.FC = () => {
     );
 
     socketDoctor.current.onopen = () => {
-      console.log("[WebSocket connection established]");
+      console.log("Doctor[WebSocket connection established]");
     };
     // setSocketDoctor(socketDoctor);
     socketPatient.current = new WebSocket(
@@ -571,7 +571,7 @@ const Meeting4: React.FC = () => {
     );
 
     socketPatient.current.onopen = () => {
-      console.log("[WebSocket connection established]");
+      console.log("Patient[WebSocket connection established]");
     };
     // setSocketPatient(socketPatient);
   }, [callId]);
