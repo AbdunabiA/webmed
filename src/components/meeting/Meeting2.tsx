@@ -118,7 +118,7 @@ const Meeting2: React.FC = () => {
   const [streamSeconds, setStreamSeconds] = useState<number>(0);
   const [socketPatient, setSocketPatient] = useState<WebSocket>();
   const [socketDoctor, setSocketDoctor] = useState<WebSocket>();
-  const [ws, setWs] = useState<WebSocket | null>(null);
+  const ws = useRef<WebSocket | null>(null);
   const [bufferData, setBufferData] = useState<{ local: any; remote: any }>();
 
 
@@ -129,7 +129,7 @@ const Meeting2: React.FC = () => {
   const isDoctor = callDetails.type === "doctor";
 
     const sendSignalingData = (data: any) => {
-      ws!.send(JSON.stringify(data));
+      ws.current!.send(JSON.stringify(data));
     };
     const handleOffer = async (offer: any) => {
       pc.setRemoteDescription(new RTCSessionDescription(offer));
@@ -189,8 +189,8 @@ const Meeting2: React.FC = () => {
 
               pc.onicecandidate = (event) => {
                 event.candidate &&
-                  ws &&
-                  ws.send(
+                  ws.current &&
+                  ws.current.send(
                     JSON.stringify({
                       type: "candidate",
                       candidate: event,
@@ -210,7 +210,7 @@ const Meeting2: React.FC = () => {
     const socket = new WebSocket(`${WEBSOCKET_API}video/${callId}/`);
     console.log("WEBSOCKET CONST", socket);
 
-    setWs(socket);
+    ws.current = socket
     // if(ws){
 
     socket.onopen = () => {
@@ -230,8 +230,8 @@ const Meeting2: React.FC = () => {
 
     // Cleanup on component unmount
     return () => {
-      if (ws) {
-        ws.close();
+      if (ws.current) {
+        ws.current.close();
       }
     };
   }, [callId]);
@@ -422,8 +422,8 @@ const Meeting2: React.FC = () => {
         console.log("onicecandidate event", event);
         
         event.candidate &&
-          ws &&
-          ws.send(
+          ws.current &&
+          ws.current.send(
             JSON.stringify({
               type: "candidate",
               candidate: event,
@@ -455,7 +455,7 @@ const Meeting2: React.FC = () => {
       //   });
     }
   };
-  console.log('websocket',ws);
+  console.log('websocket',ws.current);
   
   const handleAnswerButtonClick = () => {
     setOnCall(true);
