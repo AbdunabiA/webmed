@@ -39,10 +39,10 @@ import RecordRTC, {
 
 const servers: RTCConfiguration = {
   iceServers: [
-    { urls: "stun:stun.example.com" },
-    { urls: "stun:stun1.example.com" },
-    { urls: "stun:stun2.example.com" },
-    { urls: "stun:stun3.example.com" },
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "stun:stun1.l.google.com:19302" },
+    { urls: "stun:stun2.l.google.com:19302" },
+    { urls: "stun:stun3.l.google.com:19302" },
   ],
   iceCandidatePoolSize: 10,
 };
