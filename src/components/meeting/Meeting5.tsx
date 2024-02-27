@@ -160,8 +160,19 @@ const Meeting5: React.FC = () => {
     }
   };
 
+    const handleCall = async () => {
+      await callToPatient({
+        doctor_id: callDetails.doctor,
+        patient_id: callDetails.patient,
+        type: "patient",
+      });
+
+      console.log("[Calling...]");
+    };
+
   const handleCallButtonClick = async () => {
     setOnCall(true);
+    handleCall()
   };
 
   const handleAnswerButtonClick = () => {
