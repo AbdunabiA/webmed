@@ -330,7 +330,10 @@ const Meeting4: React.FC = () => {
 
     console.log("[Connection Status]", connection.iceConnectionState);
   };
-
+pc.current.onicecandidateerror = (event) => {
+  console.log('onicecandidateerror',event);
+  
+};
   // const handleHangupButtonClick = () => {
   //   // stopRecording();
   //   setOnCall(false);
