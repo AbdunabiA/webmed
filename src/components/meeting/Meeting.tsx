@@ -227,6 +227,7 @@ const Meeting: React.FC = () => {
       webcamVideo.current.srcObject = localStream;
     }
     if (remoteVideo.current) {
+      remoteVideo.current.volume = 1;
       remoteVideo.current.srcObject = remoteStream;
     }
 
