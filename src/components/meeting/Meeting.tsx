@@ -227,7 +227,7 @@ const Meeting: React.FC = () => {
       webcamVideo.current.srcObject = localStream;
     }
     if (remoteVideo.current) {
-      remoteVideo.current.volume = 1;
+      // remoteVideo.current.volume = 1;
       remoteVideo.current.srcObject = remoteStream;
     }
 
@@ -603,8 +603,8 @@ const Meeting: React.FC = () => {
         <video
           style={{
             objectFit: "cover",
-            height: `${dimensions.height}px`,
-            width: `${dimensions.width}px`,
+            height: `${dimensions.height/2}px`,
+            width: `${dimensions.width/2}px`,
             margin: 0,
             borderRadius: "10px",
           }}
@@ -616,11 +616,11 @@ const Meeting: React.FC = () => {
         <video
           style={{
             objectFit: "cover",
-            height: `${dimensions.height}px`,
-            width: `${dimensions.width}px`,
+            height: `${dimensions.height/2}px`,
+            width: `${dimensions.width/2}px`,
             margin: 0,
             borderRadius: "10px",
-            position: "absolute",
+            // position: "absolute",
           }}
           id="remoteVideo"
           ref={remoteVideo}
