@@ -596,11 +596,12 @@ const Meeting: React.FC = () => {
           borderRadius: "10px",
         }}
       >
+        {/* `${dimensions.height}px` */}
         <video
           style={{
             objectFit: "cover",
-            height: `${dimensions.height}px`,
-            width: `${dimensions.width}px`,
+            height: "100%",
+            width: "100%",
             margin: 0,
             borderRadius: "10px",
           }}
@@ -786,8 +787,8 @@ const Meeting: React.FC = () => {
         )}
         {onCall && (
           <video
-            width={dimensions.width / 4}
-            height={dimensions.width / 3}
+            width={100}
+            height={150}
             style={{
               position: "fixed",
               bottom: "90px",
