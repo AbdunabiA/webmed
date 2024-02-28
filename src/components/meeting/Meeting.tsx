@@ -596,12 +596,11 @@ const Meeting: React.FC = () => {
           borderRadius: "10px",
         }}
       >
-        {/* `${dimensions.height}px` */}
         <video
           style={{
             objectFit: "cover",
-            height: "100%",
-            width: "100%",
+            height: `${dimensions.height}px`,
+            width: `${dimensions.width}px`,
             margin: 0,
             borderRadius: "10px",
           }}
@@ -787,8 +786,8 @@ const Meeting: React.FC = () => {
         )}
         {onCall && (
           <video
-            width={100}
-            height={150}
+            width={dimensions.width / 4}
+            height={dimensions.width / 3}
             style={{
               position: "fixed",
               bottom: "90px",
@@ -801,7 +800,7 @@ const Meeting: React.FC = () => {
             autoPlay
             playsInline
           ></video>
-        )}
+         )} 
       </Paper>
     </div>
   );
