@@ -603,12 +603,10 @@ const Meeting: React.FC = () => {
         <video
           style={{
             objectFit: "cover",
-            height: `${dimensions.height/2}px`,
-            width: `${dimensions.width/2}px`,
+            height: `${dimensions.height}px`,
+            width: `${dimensions.width}px`,
             margin: 0,
             borderRadius: "10px",
-            position:"absolute", 
-            zIndex:"1000",
           }}
           id="remoteVideo"
           ref={remoteVideo}
@@ -712,14 +710,9 @@ const Meeting: React.FC = () => {
             </Avatar>
             <br />
             <h3 style={{ margin: 0 }}>{patient?.full_name}</h3>
-            {/* <p style={{ margin: 0 }}>{doctor?.direction}</p> */}
-
-            {/* <Typography variant="caption">
-							is calling....
-						</Typography> */}
           </div>
         )}
-        {connectionStatus === "connecting" && <CennectionChecking />}
+        {/* {connectionStatus === "connecting" && <CennectionChecking />} */}
         {connectionStatus !== "disconnected" && (
           <div
             style={{
