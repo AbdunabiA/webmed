@@ -332,9 +332,7 @@ const Meeting4: React.FC = () => {
     // handleWebcamButtonClick();
     // setConnectionStatus("connecting");
 
-    setTimeout(() => {
-      handleCall();
-    }, 1000);
+    handleCall();
   };
 
   const handleAnswerCall = async () => {};
@@ -494,6 +492,7 @@ const Meeting4: React.FC = () => {
               width: "auto",
               height: "auto",
               borderRadius: "15px",
+              background: "transparent",
             }}
           >
             <audio controls={false} autoPlay loop>
@@ -530,6 +529,7 @@ const Meeting4: React.FC = () => {
               width: "auto",
               height: "auto",
               borderRadius: "15px",
+              background: "transparent",
             }}
           >
             <Avatar
@@ -639,7 +639,7 @@ const Meeting4: React.FC = () => {
           </ButtonGroup>
         </Box>
         {/* )} */}
-        {onCall && (
+        {/* {( */}
           <video
             width={100}
             height={150}
@@ -655,7 +655,7 @@ const Meeting4: React.FC = () => {
             autoPlay
             playsInline
           ></video>
-        )}
+        {/* )} */}
       </Paper>
     </div>
   );
