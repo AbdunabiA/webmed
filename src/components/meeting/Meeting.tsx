@@ -195,7 +195,7 @@ const Meeting: React.FC = () => {
 
     localStream = await navigator.mediaDevices.getUserMedia({
       video: true,
-      // audio: true,
+      audio: true,
     });
     remoteStream = new MediaStream();
 
@@ -805,7 +805,7 @@ const Meeting: React.FC = () => {
           ></video>
         )}
       </div>
-      <video
+      {/* <video
         width={dimensions.width / 4}
         height={dimensions.width / 3}
         style={{
@@ -819,7 +819,7 @@ const Meeting: React.FC = () => {
         ref={webcamVideo}
         autoPlay
         playsInline
-      ></video>
+      ></video> */}
     </div>
   );
 };
