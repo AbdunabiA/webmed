@@ -56,7 +56,27 @@ const firestore = firebase.firestore();
 const servers: RTCConfiguration = {
   iceServers: [
     {
-      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
+      urls: "stun:stun.relay.metered.ca:80",
+    },
+    {
+      urls: "turn:standard.relay.metered.ca:80",
+      username: "78d4fbcb3ad780de80e3dd03",
+      credential: "vnk1R7jte8ZD2TOt",
+    },
+    {
+      urls: "turn:standard.relay.metered.ca:80?transport=tcp",
+      username: "78d4fbcb3ad780de80e3dd03",
+      credential: "vnk1R7jte8ZD2TOt",
+    },
+    {
+      urls: "turn:standard.relay.metered.ca:443",
+      username: "78d4fbcb3ad780de80e3dd03",
+      credential: "vnk1R7jte8ZD2TOt",
+    },
+    {
+      urls: "turns:standard.relay.metered.ca:443?transport=tcp",
+      username: "78d4fbcb3ad780de80e3dd03",
+      credential: "vnk1R7jte8ZD2TOt",
     },
   ],
   iceCandidatePoolSize: 10,
