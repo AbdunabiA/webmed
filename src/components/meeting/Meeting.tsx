@@ -667,8 +667,8 @@ const Meeting: React.FC = () => {
           </div>
         )}
         {isDoctor && !onCall && !remoteStream && (
-          <Box
-            sx={{
+          <div
+            style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -700,12 +700,12 @@ const Meeting: React.FC = () => {
             {/* <Typography variant="caption">
 							is calling....
 						</Typography> */}
-          </Box>
+          </div>
         )}
         {connectionStatus === "connecting" && <CennectionChecking />}
         {connectionStatus !== "disconnected" && (
-          <Box
-            sx={{
+          <div
+            style={{
               display: "flex",
               justifyContent: "space-between",
               position: "absolute",
@@ -785,7 +785,7 @@ const Meeting: React.FC = () => {
                 <CallEndRounded />
               </IconButton>
             </ButtonGroup>
-          </Box>
+          </div>
         )}
         {onCall && (
           <video
