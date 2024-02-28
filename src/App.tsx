@@ -137,7 +137,7 @@ function App() {
             <Route path="/rating" element={<HalfRating />} />
             <Route
               path="/meeting/:callId/:callInfo"
-              element={<VideoCallPage />}
+              element={<Meeting />}
             />
             <Route path="/meeting_chat/:chatId/:chatInfo" element={<Chat />} />
             <Route path="/payment" element={<Payment />} />
