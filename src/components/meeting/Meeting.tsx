@@ -223,6 +223,7 @@ const Meeting: React.FC = () => {
     };
 
     if (webcamVideo.current) {
+      webcamVideo.current.volume = 0;
       webcamVideo.current.srcObject = localStream;
     }
     if (remoteVideo.current) {
@@ -591,7 +592,7 @@ const Meeting: React.FC = () => {
         // elevation={4}
         style={{
           width: "100%",
-          height:"100vh",
+          height: "100vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -802,8 +803,23 @@ const Meeting: React.FC = () => {
             autoPlay
             playsInline
           ></video>
-         )} 
+        )}
       </div>
+      <video
+        width={dimensions.width / 4}
+        height={dimensions.width / 3}
+        style={{
+          position: "fixed",
+          bottom: "90px",
+          left: 10,
+          borderRadius: "15px",
+          backgroundColor: "black",
+        }}
+        id="webcamVideo"
+        ref={webcamVideo}
+        autoPlay
+        playsInline
+      ></video>
     </div>
   );
 };
