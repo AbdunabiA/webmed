@@ -607,13 +607,15 @@ const Meeting: React.FC = () => {
             width: `${dimensions.width/2}px`,
             margin: 0,
             borderRadius: "10px",
+            position:"absolute", 
+            zIndex:"1000",
           }}
           id="remoteVideo"
           ref={remoteVideo}
           autoPlay
           playsInline
         ></video>
-        <video
+        {/* <video
           style={{
             objectFit: "cover",
             height: `${dimensions.height/2}px`,
@@ -626,7 +628,7 @@ const Meeting: React.FC = () => {
           ref={remoteVideo}
           autoPlay
           playsInline
-        ></video>
+        ></video> */}
         {isDoctor && connectionStatus === "disconnected" && (
           <Button
             variant="contained"
