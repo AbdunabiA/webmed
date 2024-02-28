@@ -631,7 +631,7 @@ const Meeting: React.FC = () => {
           </Button>
         )}
         {isPatient && !onCall && !remoteStream && (
-          <Box
+          <div
             sx={{
               display: "flex",
               alignItems: "center",
@@ -664,7 +664,7 @@ const Meeting: React.FC = () => {
             <p style={{ margin: 0 }}>{doctor?.direction}</p>
 
             <Typography variant="caption">is calling....</Typography>
-          </Box>
+          </div>
         )}
         {isDoctor && !onCall && !remoteStream && (
           <Box
