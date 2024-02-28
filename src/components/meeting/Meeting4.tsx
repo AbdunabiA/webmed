@@ -315,7 +315,7 @@ const Meeting4: React.FC = () => {
     };
 
     getMedia();
-  }, []);
+  }, [onCall]);
 
   const handleCall = async () => {
     await callToPatient({
