@@ -124,7 +124,11 @@ const Meeting4: React.FC = () => {
   };
 
   const handleNewICECandidateMsg = (candidate: any) => {
-    pc.current.addIceCandidate(new RTCIceCandidate(candidate));
+    pc.current.addIceCandidate(new RTCIceCandidate(candidate)).catch(error => {
+
+      console.log('error adding ice candidate', error);
+      
+    });
   };
 
   const handleSignalingData = (data: any) => {
