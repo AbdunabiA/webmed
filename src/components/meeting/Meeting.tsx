@@ -587,9 +587,11 @@ const Meeting: React.FC = () => {
 
   return (
     <div>
-      <Paper
-        elevation={4}
-        sx={{
+      <div
+        // elevation={4}
+        style={{
+          width: "100%",
+          height:"100vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -801,7 +803,7 @@ const Meeting: React.FC = () => {
             playsInline
           ></video>
          )} 
-      </Paper>
+      </div>
     </div>
   );
 };
