@@ -834,8 +834,8 @@ const Meeting: React.FC = () => {
       <video
         style={{
           objectFit: "cover",
-          height: `${dimensions.height}px`,
-          width: `${dimensions.width}px`,
+          height: `${dimensions.height/2}px`,
+          width: `${dimensions.width/2}px`,
           margin: 0,
           borderRadius: "10px",
         }}
@@ -845,14 +845,14 @@ const Meeting: React.FC = () => {
         playsInline
       ></video>
       <video
-        width={dimensions.width / 4}
-        height={dimensions.width / 3}
+        width={dimensions.width / 2}
+        height={dimensions.width / 2}
         style={{
-          position: "fixed",
-          bottom: "90px",
-          right: 10,
-          borderRadius: "15px",
-          backgroundColor: "black",
+          // position: "fixed",
+          // bottom: "90px",
+          // right: 10,
+          // borderRadius: "15px",
+          // backgroundColor: "black",
         }}
         id="webcamVideo"
         ref={webcamVideo}
@@ -864,10 +864,10 @@ const Meeting: React.FC = () => {
         sx={{
           backgroundColor: "green",
           marginRight: "40px",
-          position: "absolute",
-          bottom:"10px",
-          left: "10px",
-          zIndex:"20"
+          // position: "absolute",
+          // bottom:"10px",
+          // left: "10px",
+          // zIndex:"20"
         }}
         onClick={isPatient ? handleAnswerButtonClick : handleCallButtonClick}
       >
