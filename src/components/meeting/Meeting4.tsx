@@ -62,6 +62,7 @@ const servers: RTCConfiguration = {
       credential: "vnk1R7jte8ZD2TOt",
     },
   ],
+  iceCandidatePoolSize: 10,
 };
 
 let localStream: MediaStream | null = null;
