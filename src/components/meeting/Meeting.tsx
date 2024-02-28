@@ -864,6 +864,10 @@ const Meeting: React.FC = () => {
         sx={{
           backgroundColor: "green",
           marginRight: "40px",
+          position: "absolute",
+          bottom:"10px",
+          left: "10px",
+          zIndex:"20"
         }}
         onClick={isPatient ? handleAnswerButtonClick : handleCallButtonClick}
       >
