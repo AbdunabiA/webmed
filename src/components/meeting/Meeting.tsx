@@ -587,292 +587,219 @@ const Meeting: React.FC = () => {
   };
 
   return (
-    // <div>
-    //   <div
-    //     // elevation={4}
-    //     style={{
-    //       width: "100%",
-    //       height: "100vh",
-    //       display: "flex",
-    //       alignItems: "center",
-    //       justifyContent: "center",
-    //       borderRadius: "10px",
-    //     }}
-    //   >
-    //     <video
-    //       style={{
-    //         objectFit: "cover",
-    //         height: `${dimensions.height}px`,
-    //         width: `${dimensions.width}px`,
-    //         margin: 0,
-    //         borderRadius: "10px",
-    //       }}
-    //       id="remoteVideo"
-    //       ref={remoteVideo}
-    //       autoPlay
-    //       playsInline
-    //     ></video>
-    //     {/* <video
-    //       style={{
-    //         objectFit: "cover",
-    //         height: `${dimensions.height/2}px`,
-    //         width: `${dimensions.width/2}px`,
-    //         margin: 0,
-    //         borderRadius: "10px",
-    //         // position: "absolute",
-    //       }}
-    //       id="remoteVideo"
-    //       ref={remoteVideo}
-    //       autoPlay
-    //       playsInline
-    //     ></video> */}
-    //     {isDoctor && connectionStatus === "disconnected" && (
-    //       <Button
-    //         variant="contained"
-    //         sx={{
-    //           display: "flex",
-    //           alignItems: "center",
-    //           justifyContent: "center",
-    //           position: "absolute",
-    //           flexDirection: "column",
-    //           top: "180px",
-    //           width: "auto",
-    //           height: "auto",
-    //           borderRadius: "15px",
-    //         }}
-    //       >
-    //         Leave diagnostics
-    //       </Button>
-    //     )}
-    //     {isPatient && !onCall && !remoteStream && (
-    //       <div
-    //         style={{
-    //           display: "flex",
-    //           alignItems: "center",
-    //           justifyContent: "center",
-    //           position: "absolute",
-    //           flexDirection: "column",
-    //           top: "180px",
-    //           width: "auto",
-    //           height: "auto",
-    //           borderRadius: "15px",
-    //         }}
-    //       >
-    //         <audio controls={false} autoPlay loop>
-    //           <source
-    //             src="https://web.telegram.org/a/call_incoming.mp3"
-    //             type="audio/mpeg"
-    //           ></source>
-    //         </audio>
-    //         <img
-    //           src={"https://telecure.ru" + doctor?.avatar}
-    //           alt="Doctor"
-    //           style={{
-    //             width: "150px",
-    //             height: "150px",
-    //             borderRadius: "50%",
-    //           }}
-    //         />
-    //         <br />
-    //         <h3 style={{ margin: 0 }}>{doctor?.full_name}</h3>
-    //         <p style={{ margin: 0 }}>{doctor?.direction}</p>
-
-    //         <Typography variant="caption">is calling....</Typography>
-    //       </div>
-    //     )}
-    //     {isDoctor && !onCall && !remoteStream && (
-    //       <div
-    //         style={{
-    //           display: "flex",
-    //           alignItems: "center",
-    //           justifyContent: "center",
-    //           position: "absolute",
-    //           flexDirection: "column",
-    //           top: "180px",
-    //           width: "auto",
-    //           height: "auto",
-    //           borderRadius: "15px",
-    //         }}
-    //       >
-    //         <Avatar
-    //           alt="Doctor"
-    //           style={{
-    //             width: "150px",
-    //             height: "150px",
-    //             borderRadius: "50%",
-    //           }}
-    //         >
-    //           <Typography variant="h4">
-    //             {patient?.full_name.split(" ")[0][0]}
-    //             {patient?.full_name.split(" ")[1][0]}
-    //           </Typography>
-    //         </Avatar>
-    //         <br />
-    //         <h3 style={{ margin: 0 }}>{patient?.full_name}</h3>
-    //       </div>
-    //     )}
-    //     {connectionStatus === "connecting" && <CennectionChecking />}
-    //     {connectionStatus !== "disconnected" && (
-    //       <div
-    //         style={{
-    //           display: "flex",
-    //           justifyContent: "space-between",
-    //           position: "absolute",
-    //           bottom: "20px",
-    //           width: "auto",
-    //           height: "auto",
-    //           borderRadius: "15px",
-    //           background: tgSecondaryBgColor,
-    //         }}
-    //       >
-    //         <ButtonGroup
-    //           sx={{
-    //             paddingRight: "20px",
-    //             paddingLeft: "20px",
-    //             paddingTop: "5px",
-    //             paddingBottom: "5px",
-    //           }}
-    //         >
-    //           {!onCall && (
-    //             <IconButton
-    //               className={callStatus === "incoming" ? "ringing-icon" : ""}
-    //               sx={{
-    //                 backgroundColor: "green",
-    //                 marginRight: "40px",
-    //               }}
-    //               onClick={
-    //                 isPatient ? handleAnswerButtonClick : handleCallButtonClick
-    //               }
-    //             >
-    //               <CallIcon />
-    //             </IconButton>
-    //           )}
-    //           {connectionStatus === "connecting" && isDoctor && (
-    //             <audio controls={false} autoPlay loop>
-    //               <source
-    //                 src="https://web.telegram.org/a/call_ringing.mp3"
-    //                 type="audio/mpeg"
-    //               ></source>
-    //             </audio>
-    //           )}
-    //           {connectionStatus === "connecting" && isPatient && (
-    //             <audio controls={false} autoPlay loop>
-    //               <source
-    //                 src="https://web.telegram.org/a/voicechat_connecting.mp3"
-    //                 type="audio/mpeg"
-    //               ></source>
-    //             </audio>
-    //           )}
-    //           {onCall && (
-    //             <>
-    //               <IconButton
-    //                 sx={{
-    //                   backgroundColor: "green",
-    //                   marginRight: "40px",
-    //                 }}
-    //                 onClick={handleVideoCam}
-    //               >
-    //                 {videoCamOn ? <Videocam /> : <VideocamOff />}
-    //               </IconButton>
-    //               <IconButton
-    //                 sx={{
-    //                   backgroundColor: "green",
-    //                   marginRight: "40px",
-    //                 }}
-    //                 onClick={handleVideoMic}
-    //               >
-    //                 {videoMicOn ? <Mic /> : <MicOff />}
-    //               </IconButton>
-    //             </>
-    //           )}
-
-    //           <IconButton
-    //             sx={{ backgroundColor: "red" }}
-    //             onClick={handleHangupButtonClick}
-    //             disabled={!isPatient && !(isDoctor && onCall)}
-    //           >
-    //             <CallEndRounded />
-    //           </IconButton>
-    //         </ButtonGroup>
-    //       </div>
-    //     )}
-    //     {onCall && (
-    //       <video
-    //         width={dimensions.width / 4}
-    //         height={dimensions.width / 3}
-    //         style={{
-    //           position: "fixed",
-    //           bottom: "90px",
-    //           right: 10,
-    //           borderRadius: "15px",
-    //           backgroundColor: "black",
-    //         }}
-    //         id="webcamVideo"
-    //         ref={webcamVideo}
-    //         autoPlay
-    //         playsInline
-    //       ></video>
-    //     )}
-    //   </div>
-    //   {/* <video
-    //     width={dimensions.width / 4}
-    //     height={dimensions.width / 3}
-    //     style={{
-    //       position: "fixed",
-    //       bottom: "90px",
-    //       left: 10,
-    //       borderRadius: "15px",
-    //       backgroundColor: "black",
-    //     }}
-    //     id="webcamVideo"
-    //     ref={webcamVideo}
-    //     autoPlay
-    //     playsInline
-    //   ></video> */}
-    // </div>
     <div>
-      <video
+      <div
+        // elevation={4}
         style={{
-          objectFit: "cover",
-          height: `${dimensions.height/2}px`,
-          width: `${dimensions.width/2}px`,
-          margin: 0,
+          width: "100%",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           borderRadius: "10px",
         }}
-        id="remoteVideo"
-        ref={remoteVideo}
-        autoPlay
-        playsInline
-      ></video>
-      <video
-        width={dimensions.width / 2}
-        height={dimensions.width / 2}
-        style={{
-          // position: "fixed",
-          // bottom: "90px",
-          // right: 10,
-          // borderRadius: "15px",
-          // backgroundColor: "black",
-        }}
-        id="webcamVideo"
-        ref={webcamVideo}
-        autoPlay
-        playsInline
-      ></video>
-      <IconButton
-        className={callStatus === "incoming" ? "ringing-icon" : ""}
-        sx={{
-          backgroundColor: "green",
-          marginRight: "40px",
-          // position: "absolute",
-          // bottom:"10px",
-          // left: "10px",
-          // zIndex:"20"
-        }}
-        onClick={isPatient ? handleAnswerButtonClick : handleCallButtonClick}
       >
-        <CallIcon />
-      </IconButton>
+        <video
+          style={{
+            objectFit: "cover",
+            height: `${dimensions.height}px`,
+            width: `${dimensions.width}px`,
+            margin: 0,
+            borderRadius: "10px",
+          }}
+          id="remoteVideo"
+          ref={remoteVideo}
+          autoPlay
+          playsInline
+        ></video>
+        {isDoctor && connectionStatus === "disconnected" && (
+          <Button
+            variant="contained"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "absolute",
+              flexDirection: "column",
+              top: "180px",
+              width: "auto",
+              height: "auto",
+              borderRadius: "15px",
+            }}
+          >
+            Leave diagnostics
+          </Button>
+        )}
+        {isPatient && !onCall && !remoteStream && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "absolute",
+              flexDirection: "column",
+              top: "180px",
+              width: "auto",
+              height: "auto",
+              borderRadius: "15px",
+            }}
+          >
+            <audio controls={false} autoPlay loop>
+              <source
+                src="https://web.telegram.org/a/call_incoming.mp3"
+                type="audio/mpeg"
+              ></source>
+            </audio>
+            <img
+              src={"https://telecure.ru" + doctor?.avatar}
+              alt="Doctor"
+              style={{
+                width: "150px",
+                height: "150px",
+                borderRadius: "50%",
+              }}
+            />
+            <br />
+            <h3 style={{ margin: 0 }}>{doctor?.full_name}</h3>
+            <p style={{ margin: 0 }}>{doctor?.direction}</p>
+
+            <Typography variant="caption">is calling....</Typography>
+          </div>
+        )}
+        {isDoctor && !onCall && !remoteStream && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "absolute",
+              flexDirection: "column",
+              top: "180px",
+              width: "auto",
+              height: "auto",
+              borderRadius: "15px",
+            }}
+          >
+            <Avatar
+              alt="Doctor"
+              style={{
+                width: "150px",
+                height: "150px",
+                borderRadius: "50%",
+              }}
+            >
+              <Typography variant="h4">
+                {patient?.full_name.split(" ")[0][0]}
+                {patient?.full_name.split(" ")[1][0]}
+              </Typography>
+            </Avatar>
+            <br />
+            <h3 style={{ margin: 0 }}>{patient?.full_name}</h3>
+          </div>
+        )}
+        {connectionStatus === "connecting" && <CennectionChecking />}
+        {connectionStatus !== "disconnected" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              position: "absolute",
+              bottom: "20px",
+              width: "auto",
+              height: "auto",
+              borderRadius: "15px",
+              background: tgSecondaryBgColor,
+            }}
+          >
+            <ButtonGroup
+              sx={{
+                paddingRight: "20px",
+                paddingLeft: "20px",
+                paddingTop: "5px",
+                paddingBottom: "5px",
+              }}
+            >
+              {!onCall && (
+                <IconButton
+                  className={callStatus === "incoming" ? "ringing-icon" : ""}
+                  sx={{
+                    backgroundColor: "green",
+                    marginRight: "40px",
+                  }}
+                  onClick={
+                    isPatient ? handleAnswerButtonClick : handleCallButtonClick
+                  }
+                >
+                  <CallIcon />
+                </IconButton>
+              )}
+              {connectionStatus === "connecting" && isDoctor && (
+                <audio controls={false} autoPlay loop>
+                  <source
+                    src="https://web.telegram.org/a/call_ringing.mp3"
+                    type="audio/mpeg"
+                  ></source>
+                </audio>
+              )}
+              {connectionStatus === "connecting" && isPatient && (
+                <audio controls={false} autoPlay loop>
+                  <source
+                    src="https://web.telegram.org/a/voicechat_connecting.mp3"
+                    type="audio/mpeg"
+                  ></source>
+                </audio>
+              )}
+              {onCall && (
+                <>
+                  <IconButton
+                    sx={{
+                      backgroundColor: "green",
+                      marginRight: "40px",
+                    }}
+                    onClick={handleVideoCam}
+                  >
+                    {videoCamOn ? <Videocam /> : <VideocamOff />}
+                  </IconButton>
+                  <IconButton
+                    sx={{
+                      backgroundColor: "green",
+                      marginRight: "40px",
+                    }}
+                    onClick={handleVideoMic}
+                  >
+                    {videoMicOn ? <Mic /> : <MicOff />}
+                  </IconButton>
+                </>
+              )}
+
+              <IconButton
+                sx={{ backgroundColor: "red" }}
+                onClick={handleHangupButtonClick}
+                disabled={!isPatient && !(isDoctor && onCall)}
+              >
+                <CallEndRounded />
+              </IconButton>
+            </ButtonGroup>
+          </div>
+        )}
+        {onCall && (
+          <video
+            width={dimensions.width / 4}
+            height={dimensions.width / 3}
+            style={{
+              position: "fixed",
+              bottom: "90px",
+              right: 10,
+              borderRadius: "15px",
+              backgroundColor: "black",
+            }}
+            id="webcamVideo"
+            ref={webcamVideo}
+            autoPlay
+            playsInline
+          ></video>
+        )}
+      </div>
     </div>
   );
 };
