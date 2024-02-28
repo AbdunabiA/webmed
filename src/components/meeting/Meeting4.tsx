@@ -36,7 +36,6 @@ import RecordRTC, {
   invokeSaveAsDialog,
 } from "recordrtc";
 
-
 const servers: RTCConfiguration = {
   iceServers: [
     {
@@ -65,7 +64,6 @@ const servers: RTCConfiguration = {
   ],
 };
 
-
 let localStream: MediaStream | null = null;
 let remoteStream: MediaStream | null = null;
 
@@ -89,7 +87,6 @@ const Meeting4: React.FC = () => {
   const socketDoctor = useRef<WebSocket | null>(null);
   const ws = useRef<WebSocket | null>(null);
 
-
   console.log("calldetails", callDetails);
 
   const isPatient = callDetails.type === "patient";
@@ -104,26 +101,25 @@ const Meeting4: React.FC = () => {
     await pc.current.setLocalDescription(answer);
     sendSignalingData({ type: "answer", answer, senderId: clientId.current });
     // setTimeout(() => {
-      pc.current.onicecandidate = (event) => {
-        console.log("onicecandidate event patient", event);
+    pc.current.onicecandidate = (event) => {
+      console.log("onicecandidate event patient", event);
 
-        event.candidate &&
-          ws.current &&
-          ws.current.send(
-            JSON.stringify({
-              type: "candidate",
-              candidate: event.candidate,
-              senderId: clientId.current,
-            })
-          );
-      };
+      event.candidate &&
+        ws.current &&
+        ws.current.send(
+          JSON.stringify({
+            type: "candidate",
+            candidate: event.candidate,
+            senderId: clientId.current,
+          })
+        );
+    };
     // }, 2000);
   };
 
   const handleAnswer = (answer: any) => {
-    
     pc.current.setRemoteDescription(new RTCSessionDescription(answer));
-    console.log('handle answer was called', answer);
+    console.log("handle answer was called", answer);
   };
 
   const handleNewICECandidateMsg = (candidate: any) => {
@@ -139,8 +135,8 @@ const Meeting4: React.FC = () => {
         }
         break;
       case "answer":
-        console.log('answer is in the case', data);
-        
+        console.log("answer is in the case", data);
+
         if (clientId.current !== data.senderId) {
           handleAnswer(data.answer);
           console.log("handled answer", data.answer);
@@ -154,7 +150,8 @@ const Meeting4: React.FC = () => {
         break;
       case "patientConnected":
         if (clientId.current !== data.senderId) {
-          pc.current.createOffer()
+          pc.current
+            .createOffer()
             .then((offer) => {
               console.log("offer", offer);
               pc.current.setLocalDescription(offer);
@@ -249,42 +246,76 @@ const Meeting4: React.FC = () => {
     }
   }, [callId]);
 
-  const handleWebcamButtonClick = async () => {
+  // const handleWebcamButtonClick = async () => {
+  //   localStream = await navigator.mediaDevices.getUserMedia({
+  //     video: true,
+  //     audio: true,
+  //   });
+  //   setLocalStreamm(localStream);
+  //   remoteStream = new MediaStream();
+  //   if (webcamVideo.current) {
+  //     webcamVideo.current.srcObject = localStream;
+  //     console.log("webcamVideo.current.srcObject");
+  //   }
+  //   if (localStream) {
+  //     localStream.getTracks().forEach((track) => {
+  //       pc.current.addTrack(track, localStream!);
+  //       console.log("local track is being added to track");
+  //     });
+  //   }
 
-    localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-    setLocalStreamm(localStream)
-    remoteStream = new MediaStream();
-    if (webcamVideo.current) {
-      webcamVideo.current.srcObject = localStream;
-      console.log("webcamVideo.current.srcObject");
-      
-    }
-    if(localStream){
-      localStream.getTracks().forEach((track) => {
-        pc.current.addTrack(track, localStream!);
-        console.log("local track is being added to track");
-      });
-    }
+  //   pc.current.ontrack = (event) => {
+  //     console.log("ontrack event", event);
+  //     event.streams[0].getTracks().forEach((track) => {
+  //       console.log("adding remotetrack", track);
+  //       remoteStream!.addTrack(track);
+  //     });
+  //   };
 
-    pc.current.ontrack = (event) => {
-      console.log("ontrack event", event);
-      event.streams[0].getTracks().forEach((track) => {
-        console.log("adding remotetrack", track);
-        remoteStream!.addTrack(track);
-      });
+  //   if (remoteVideo.current) {
+  //     remoteVideo.current.srcObject = remoteStream;
+  //   }
+
+  //   // setLocalMediaRecorder(localMediaRecorde);
+  //   // setRemoteMediaRecorder(remoteMediaRecorde);
+  // };
+
+  useEffect(() => {
+    const getMedia = async () => {
+      try {
+        const localStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+        setLocalStreamm(localStream);
+        remoteStream = new MediaStream();
+        if (webcamVideo.current) {
+          webcamVideo.current.srcObject = localStream;
+          console.log("webcamVideo.current.srcObject");
+        }
+        if (localStream) {
+          localStream.getTracks().forEach((track) => {
+            pc.current.addTrack(track, localStream!);
+            console.log("local track is being added to track");
+          });
+        }
+        pc.current.ontrack = (event) => {
+          console.log("ontrack event", event);
+          event.streams[0].getTracks().forEach((track) => {
+            console.log("adding remotetrack", track);
+            remoteStream!.addTrack(track);
+          });
+        };
+        if (remoteVideo.current) {
+          remoteVideo.current.srcObject = remoteStream;
+        }
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    
-    if (remoteVideo.current) {
-      remoteVideo.current.srcObject = remoteStream;
-    }
-
-    // setLocalMediaRecorder(localMediaRecorde);
-    // setRemoteMediaRecorder(remoteMediaRecorde);
-  };
+    getMedia();
+  }, []);
 
   const handleCall = async () => {
     await callToPatient({
@@ -298,7 +329,7 @@ const Meeting4: React.FC = () => {
 
   const handleCallButtonClick = async () => {
     setOnCall(true);
-    handleWebcamButtonClick();
+    // handleWebcamButtonClick();
     // setConnectionStatus("connecting");
 
     setTimeout(() => {
@@ -306,18 +337,15 @@ const Meeting4: React.FC = () => {
     }, 1000);
   };
 
-  const handleAnswerCall = async () => {
-
-  };
+  const handleAnswerCall = async () => {};
   console.log("websocket", ws.current);
-  console.log('PC', pc.current);
-  
+  console.log("PC", pc.current);
 
   const handleAnswerButtonClick = () => {
-    console.log('handleAnswerButtonClick function called');
-    
+    console.log("handleAnswerButtonClick function called");
+
     setOnCall(true);
-    handleWebcamButtonClick();
+    // handleWebcamButtonClick();
     setTimeout(() => {
       handleAnswerCall();
     }, 2000);
@@ -349,10 +377,9 @@ const Meeting4: React.FC = () => {
 
     console.log("[Connection Status]", connection.iceConnectionState);
   };
-pc.current.onicecandidateerror = (event) => {
-  console.log('onicecandidateerror',event);
-  
-};
+  pc.current.onicecandidateerror = (event) => {
+    console.log("onicecandidateerror", event);
+  };
   // const handleHangupButtonClick = () => {
   //   // stopRecording();
   //   setOnCall(false);
@@ -390,7 +417,6 @@ pc.current.onicecandidateerror = (event) => {
   //     endCall(callId);
   //   }
   // };
-
 
   useEffect(() => {
     socketDoctor.current = new WebSocket(
