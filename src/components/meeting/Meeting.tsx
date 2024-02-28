@@ -632,7 +632,7 @@ const Meeting: React.FC = () => {
         )}
         {isPatient && !onCall && !remoteStream && (
           <div
-            sx={{
+            style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
