@@ -5,7 +5,7 @@ import DoctorCard from "./DoctorCard";
 import { IDoctor } from "./types";
 import Header from "../header/Header";
 import { getDoctors } from "../../utils/api";
-import { saveSelectedDoctor } from "../../utils/storage";
+import { getUser, saveSelectedDoctor } from "../../utils/storage";
 import { useNavigate } from "react-router-dom";
 import { BackButton, MainButton } from "@vkruglikov/react-telegram-web-app";
 
@@ -19,7 +19,7 @@ const DoctorsList = () => {
 
   useEffect(() => {
     const fetchDoctorsData = async () => {
-      const { doctors, directions } = await getDoctors();
+      const { doctors, directions } = await getDoctors(getUser().id as string);
       setDirectionsList(directions);
       setDoctorsList(doctors);
     };

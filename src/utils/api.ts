@@ -39,8 +39,8 @@ export const fetchChatHistory = async (id: string) => {
 	}
 };
 
-export const getDoctors = async (): Promise<{ doctors: IDoctor[], directions: string[] }> => {
-	const response = await api.get("/doctor");
+export const getDoctors = async (user_id:string): Promise<{ doctors: IDoctor[], directions: string[] }> => {
+	const response = await api.get(`/doctor/?user_id=${user_id}`);
 	return response.data;
 };
 
