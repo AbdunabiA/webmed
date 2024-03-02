@@ -17,7 +17,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 			}}
 		>
 			<h2>{title}</h2>
-			<img
+			{/* <img
 				src="logo.jpg"
 				alt="logo"
 				style={{
@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 					height: "30px",
 					borderRadius: "50%",
 				}}
-			/>
+			/> */}
 		</Box>
 	);
 }
