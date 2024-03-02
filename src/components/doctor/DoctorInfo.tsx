@@ -43,7 +43,7 @@ const DoctorInfo = () => {
             }}
           >
             <img
-              src={"https://telecure.ru/api/v1" + doctor?.avatar}
+              src={"https://telecure.ru" + doctor?.avatar}
               alt="Doctor"
               style={{
                 width: "180px",
