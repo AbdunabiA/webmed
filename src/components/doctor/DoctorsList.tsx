@@ -160,7 +160,7 @@ const DoctorsList = () => {
       </div>
       {selectedDoctor !== null && (
         <MainButton
-          text={(selectedDoctor?.full_name + " билан давом етиш") as string}
+          text={("Записаться на " + selectedDoctor?.full_name) as string}
           onClick={handleDoctorSelect}
         />
       )}

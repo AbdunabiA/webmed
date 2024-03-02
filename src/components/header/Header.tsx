@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 		>
 			<h2>{title}</h2>
 			<img
-				src="logo192.png"
+				src="logo.jpg"
 				alt="logo"
 				style={{
 					width: "30px",
