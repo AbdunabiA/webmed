@@ -26,13 +26,13 @@ const Summary = () => {
 		appointmentData: {
 			selectedDoctor: getSelectedDoctor(),
 			patient: getPatientInfo(),
-			selectedDateTime: getSelectedDateTime(),
+			// selectedDateTime: getSelectedDateTime(),
 			user_id: getUser().id,
 		},
 	};
 	const selectedDoctor = appointmentData.selectedDoctor as IDoctor;
 	const patient = appointmentData.patient as IAppointment;
-	const selectedDateTime = getSelectedDateTime() as ISelectedDateTime
+	// const selectedDateTime = getSelectedDateTime() as ISelectedDateTime
 	const user_id = appointmentData.user_id
 
 	const navigate = useNavigate();
@@ -87,14 +87,14 @@ const Summary = () => {
         >
           Время посещения
         </Typography>
-        <Typography>
+        {/* <Typography>
           {selectedDateTime.selectedDate},{" "}
           {months[selectedDateTime.selectedMonth - 1]},{" "}
           {selectedDateTime.selectedYear}
-        </Typography>
+        </Typography> */}
         <Typography>
           <Chip
-            label={selectedDateTime.selectedTime}
+            // label={selectedDateTime.selectedTime}
             sx={{
               backgroundColor: colors.blue[500],
               height: "22px",

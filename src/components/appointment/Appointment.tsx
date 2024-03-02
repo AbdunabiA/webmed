@@ -34,7 +34,7 @@ const AppointmentPage = () => {
 	const navigate = useNavigate();
 
 	const selectedDoctor = getSelectedDoctor();
-	const selectedDateTime = getSelectedDateTime();
+	// const selectedDateTime = getSelectedDateTime();
 	const patientInfo = getPatientInfo();
 	const { id: user_id } = getUser()
 
@@ -101,7 +101,7 @@ const AppointmentPage = () => {
 					patient: formData,
 					user_id,
 					selectedDoctor,
-					selectedDateTime,
+					// selectedDateTime,
 				},
 			},
 		});
