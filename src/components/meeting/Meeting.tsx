@@ -779,7 +779,7 @@ const Meeting: React.FC = () => {
               <IconButton
                 sx={{ backgroundColor: "red" }}
                 onClick={handleHangupButtonClick}
-                disabled={onCall && (isDoctor || isPatient)}
+                disabled={onCall}
               >
                 <CallEndRounded />
               </IconButton>
