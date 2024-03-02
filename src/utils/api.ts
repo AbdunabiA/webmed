@@ -29,14 +29,14 @@ interface IPatientResult {
 	result_text: string;
 }
 
-export const fetchChatHistory = async (id:string) => {
-  try {
-    const response = await api.get<Message[]>(`chat_history/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching chat history:', error);
-    throw error;
-  }
+export const fetchChatHistory = async (id: string) => {
+	try {
+		const response = await api.get<Message[]>(`chat_history/${id}`);
+		return response.data;
+	} catch (error) {
+		console.error('Error fetching chat history:', error);
+		throw error;
+	}
 };
 
 export const getDoctors = async (): Promise<{ doctors: IDoctor[], directions: string[] }> => {
@@ -85,7 +85,7 @@ export const createPatientResult = async (data: IPatientResult) => {
 	return response.data;
 };
 
-export const rateDoctor = async (data: {doctor_id: number | null, rating: number}) => {
+export const rateDoctor = async (data: { doctor_id: number | null, rating: number }) => {
 	const response = await api.post("/doctor_rating/", data);
 	return response.data;
 }
@@ -93,4 +93,9 @@ export const rateDoctor = async (data: {doctor_id: number | null, rating: number
 export const endCall = async (room_name: string) => {
 	const response = await api.get(`/end_record/?room_name=${room_name}`);
 	return response.data;
-} 
+}
+
+export const patientDidNotAnswer = async (room_name: string) => {
+	const response = await api.post(`/stop_call/`, {room_name});
+	return response.data;
+}

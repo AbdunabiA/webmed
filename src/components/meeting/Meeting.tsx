@@ -30,6 +30,7 @@ import {
   getDoctor,
   getPatient,
   endCall,
+  patientDidNotAnswer,
 } from "../../utils/api";
 import CennectionChecking from "./Connecting";
 import RecordRTC, {
@@ -409,6 +410,9 @@ const Meeting: React.FC = () => {
     }
 
     pc.close();
+    if(isDoctor && callStatus === 'outgoing' && connectionStatus === 'connecting'){
+      patientDidNotAnswer(callId as string)
+    }
 
     if (isDoctor) {
       setConnectionStatus("disconnected");
@@ -775,7 +779,7 @@ const Meeting: React.FC = () => {
               <IconButton
                 sx={{ backgroundColor: "red" }}
                 onClick={handleHangupButtonClick}
-                disabled={!isPatient && !(isDoctor && onCall)}
+                disabled={onCall && (isDoctor || isPatient)}
               >
                 <CallEndRounded />
               </IconButton>
