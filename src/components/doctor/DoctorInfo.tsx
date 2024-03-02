@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-	Button,
-	Box,
-	colors,
-	Divider,
-	CircularProgress,
-	Typography,
+  Button,
+  Box,
+  colors,
+  Divider,
+  CircularProgress,
+  Typography,
 } from "@mui/material";
 import { IDoctor } from "./types";
 import { BACKEND_URL, getDoctor } from "../../utils/api";
@@ -14,22 +14,22 @@ import Header from "../header/Header";
 import { BackButton } from "@vkruglikov/react-telegram-web-app";
 
 const DoctorInfo = () => {
-	const { id } = useParams();
-    const navigate = useNavigate();
-	const [doctor, setDoctor] = useState<IDoctor>();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [doctor, setDoctor] = useState<IDoctor>();
 
-	useEffect(() => {
-		(async () => {
-			const doctor = await getDoctor(Number(id));
-			setDoctor(doctor);
-		})()
-	}, [])
+  useEffect(() => {
+    (async () => {
+      const doctor = await getDoctor(Number(id));
+      setDoctor(doctor);
+    })();
+  }, []);
 
-	const handleBookAppointment = () => {
-        navigate(`/payment`);
-	};
+  const handleBookAppointment = () => {
+    navigate("/appointment");
+  };
 
-	return (
+  return (
     <div>
       <BackButton onClick={() => navigate(-1)} />
       <Header title="О докторе" />
@@ -43,7 +43,7 @@ const DoctorInfo = () => {
             }}
           >
             <img
-              src={"https://telecure.ru" + doctor?.avatar}
+              src={BACKEND_URL + doctor?.avatar}
               alt="Doctor"
               style={{
                 width: "180px",
