@@ -26,7 +26,7 @@ const DoctorInfo = () => {
 	}, [])
 
 	const handleBookAppointment = () => {
-        navigate(`/doctor/${id}/pick-time`);
+        navigate(`/payment`);
 	};
 
 	return (

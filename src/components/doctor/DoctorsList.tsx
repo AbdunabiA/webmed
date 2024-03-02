@@ -4,85 +4,46 @@ import SearchInput from "../common/SearchInput";
 import DoctorCard from "./DoctorCard";
 import { IDoctor } from "./types";
 import Header from "../header/Header";
-import { getDoctors, makeAppointment } from "../../utils/api";
-import { getPatientInfo, getSelectedDateTime, getSelectedDoctor, getUser, saveSelectedDoctor } from "../../utils/storage";
-import { useLocation, useNavigate } from "react-router-dom";
+import { getDoctors } from "../../utils/api";
+import { saveSelectedDoctor } from "../../utils/storage";
+import { useNavigate } from "react-router-dom";
 import { BackButton, MainButton } from "@vkruglikov/react-telegram-web-app";
-import { IAppointment, ISelectedDateTime } from "../appointment/types";
 
 const DoctorsList = () => {
-	const [selectedButton, setSelectedButton] = useState<number | null>(null);
-	const [selectedDoctor, setSelectedDoctor] = useState<IDoctor | null>(null);
-	const [doctorsList, setDoctorsList] = useState<IDoctor[]>();
-	const [directionsList, setDirectionsList] = useState<string[]>();
-	const [searchValue, setSearchValue] = useState<string>("");
-	const navigate = useNavigate();
+  const [selectedButton, setSelectedButton] = useState<number | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<IDoctor | null>(null);
+  const [doctorsList, setDoctorsList] = useState<IDoctor[]>();
+  const [directionsList, setDirectionsList] = useState<string[]>();
+  const [searchValue, setSearchValue] = useState<string>("");
+  const navigate = useNavigate();
 
-	const location = useLocation();
-  const { appointmentData } = location.state || {
-    appointmentData: {
-      selectedDoctor: getSelectedDoctor(),
-      patient: getPatientInfo(),
-      selectedDateTime: getSelectedDateTime(),
-      user_id: getUser().id,
-    },
-  };
-//   const selectedDocto = appointmentData.selectedDocto as IDoctor;
-  const patient = appointmentData.patient as IAppointment;
-  const user_id = appointmentData.user_id;
-  
+  useEffect(() => {
+    const fetchDoctorsData = async () => {
+      const { doctors, directions } = await getDoctors();
+      setDirectionsList(directions);
+      setDoctorsList(doctors);
+    };
+    fetchDoctorsData();
+  }, []);
 
-  const handleConfirm = async () => {
-	console.log( patient, user_id);
-	
-    try {
-      const response = await makeAppointment({
-        user: user_id,
-        full_name: patient.name + " " + patient.surname,
-        phone_number: patient.phoneNumber,
-        additional_information: patient.additionalInfo,
-        // conference_date: selectedDateTime,
-        doctor_id: selectedDoctor?.id.toString(),
-      });
-      console.log(response);
-      navigate("/payment", {
-        state: {
-          paymentUrl: response.payment_url,
-        },
-      });
-    } catch (error: any) {
-      console.error(error.message);
+  const handleButtonClick = (index: number) => {
+    if (selectedButton === index) {
+      setSelectedButton(null);
+    } else {
+      setSelectedButton(index);
     }
   };
 
-	useEffect(() => {
-		const fetchDoctorsData = async () => {
-			const { doctors, directions } = await getDoctors();
-			setDirectionsList(directions);
-			setDoctorsList(doctors);
-		};
-		fetchDoctorsData();
-	}, []);
+  const handleDoctorSelect = () => {
+    saveSelectedDoctor(selectedDoctor);
+    navigate(`/doctor/${selectedDoctor?.id}`);
+  };
 
-	const handleButtonClick = (index: number) => {
-		saveSelectedDoctor(selectedDoctor);
-		if (selectedButton === index) {
-			setSelectedButton(null);
-		} else {
-			setSelectedButton(index);
-		}
-	};
+  const handleSearchValue = (value: string) => {
+    setSearchValue(value);
+  };
 
-	const handleDoctorSelect = () => {
-		saveSelectedDoctor(selectedDoctor);
-		navigate(`/doctor/${selectedDoctor?.id}`);
-	};
-
-	const handleSearchValue = (value: string) => {
-		setSearchValue(value);
-	};
-
-	return (
+  return (
     <div>
       <BackButton onClick={() => navigate(-1)} />
       <Header title="Выбрать врача" />
@@ -200,7 +161,7 @@ const DoctorsList = () => {
       {selectedDoctor !== null && (
         <MainButton
           text={(selectedDoctor?.full_name + " билан давом етиш") as string}
-          onClick={handleConfirm}
+          onClick={handleDoctorSelect}
         />
       )}
     </div>
