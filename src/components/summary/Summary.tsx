@@ -141,7 +141,7 @@ const Summary = () => {
               variant="subtitle2"
               sx={{ fontWeight: "bold", color: colors.grey[400] }}
             >
-              Цена: {selectedDoctor.price} UZS
+              Цена: {selectedDoctor.price} RUB
             </Typography>
           </Box>
         </Box>
