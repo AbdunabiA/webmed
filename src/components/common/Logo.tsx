@@ -4,7 +4,7 @@ const Logo = () => {
     return (
 			<Box mt={4} textAlign="center" sx={{ display: "flex" }}>
 				<img
-					src="logo512.png"
+					src="logo.jpg"
 					alt="My Photo"
 					style={{
 						borderRadius: "50%",
