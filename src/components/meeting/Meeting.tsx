@@ -410,8 +410,12 @@ const Meeting: React.FC = () => {
     }
 
     pc.close();
-    if(isDoctor && callStatus === 'outgoing' && connectionStatus === 'connecting'){
-      patientDidNotAnswer(callId as string)
+    if (
+      isDoctor &&
+      callStatus === "outgoing" &&
+      connectionStatus === "connecting"
+    ) {
+      patientDidNotAnswer(callId as string);
     }
 
     if (isDoctor) {
@@ -775,14 +779,15 @@ const Meeting: React.FC = () => {
                   </IconButton>
                 </>
               )}
-
-              <IconButton
-                sx={{ backgroundColor: "red" }}
-                onClick={handleHangupButtonClick}
-                disabled={onCall}
-              >
-                <CallEndRounded />
-              </IconButton>
+              {onCall ? (
+                <IconButton
+                  sx={{ backgroundColor: "red" }}
+                  onClick={handleHangupButtonClick}
+                  // disabled={onCall}
+                >
+                  <CallEndRounded />
+                </IconButton>
+              ) : null}
             </ButtonGroup>
           </div>
         )}
