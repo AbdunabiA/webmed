@@ -80,18 +80,14 @@ const Summary = () => {
 
       <Divider variant="fullWidth" sx={{ mt: 2 }} />
 
-      <Paper elevation={0} sx={{ p: 2, mt: 2 }}>
+      {/* <Paper elevation={0} sx={{ p: 2, mt: 2 }}>
         <Typography
           variant="subtitle1"
           sx={{ fontWeight: "bold", color: colors.grey[400] }}
         >
           Время посещения
         </Typography>
-        {/* <Typography>
-          {selectedDateTime.selectedDate},{" "}
-          {months[selectedDateTime.selectedMonth - 1]},{" "}
-          {selectedDateTime.selectedYear}
-        </Typography> */}
+        
         <Typography>
           <Chip
             // label={selectedDateTime.selectedTime}
@@ -101,7 +97,7 @@ const Summary = () => {
             }}
           />
         </Typography>
-      </Paper>
+      </Paper> */}
 
       <Paper elevation={0} sx={{ p: 2, mt: 2 }}>
         <Typography
