@@ -149,7 +149,13 @@ const Summary = () => {
           </Box>
         </Box>
       </Paper>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          paddingBottom: "20px",
+        }}
+      >
         {paymentUrl ? (
           <a
             href={paymentUrl}
@@ -160,7 +166,7 @@ const Summary = () => {
               padding: "10px 24px",
               borderRadius: "10px",
               border: "1px solid white",
-              margin: "20px auto",
+              // margin: "20px auto",
               backgroundColor: "#0c9ed0",
             }}
           >
