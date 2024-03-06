@@ -149,7 +149,7 @@ const Summary = () => {
           </Box>
         </Box>
       </Paper>
-      <div
+      {/* <div
         style={{
           display: "flex",
           justifyContent: "center",
@@ -173,11 +173,17 @@ const Summary = () => {
             Перейти к оплате
           </a>
         ) : null}
-      </div>
+      </div> */}
       <br />
       <br />
       <br />
-      <MainButton text="Подтверждать" onClick={handleConfirm} />
+      {paymentUrl ? (
+        <a href={paymentUrl}>
+          <MainButton text="Перейти к оплате"/>
+        </a>
+      ) : (
+        <MainButton text="Подтверждать" onClick={handleConfirm} />
+      )}
     </div>
   );
 };
