@@ -179,10 +179,38 @@ const Summary = () => {
       <br />
       {paymentUrl ? (
         <a href={paymentUrl}>
-          <MainButton text="Перейти к оплате"/>
+          <button
+            style={{
+              position: "absolute",
+              bottom: "0",
+              left: "0",
+              width: "100%",
+              padding: "10px",
+              fontSize: "20px",
+              backgroundColor: "#057da5",
+              color: "white",
+            }}
+          >
+            Перейти к оплате
+          </button>
         </a>
       ) : (
-        <MainButton text="Подтверждать" onClick={handleConfirm} />
+        // <MainButton text="Подтверждать" onClick={handleConfirm} />
+        <button
+          style={{
+            position: "absolute",
+            bottom: "0",
+            left: "0",
+            width: "100%",
+            padding: "10px",
+            fontSize: "20px",
+            backgroundColor: "#057da5",
+            color: "white",
+          }}
+          onClick={handleConfirm}
+        >
+          Подтверждать
+        </button>
       )}
     </div>
   );
