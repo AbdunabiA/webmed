@@ -148,6 +148,8 @@ const Summary = () => {
             </Typography>
           </Box>
         </Box>
+      </Paper>
+      <div>
         {paymentUrl ? (
           <a
             href={paymentUrl}
@@ -165,7 +167,7 @@ const Summary = () => {
             Перейти к оплате
           </a>
         ) : null}
-      </Paper>
+      </div>
       <br />
       <br />
       <br />
