@@ -158,6 +158,8 @@ const Summary = () => {
               padding: "10px 24px",
               borderRadius: "10px",
               border: "1px solid white",
+              margin: "20px auto",
+              backgroundColor: "#0c9ed0",
             }}
           >
             Перейти к оплате
