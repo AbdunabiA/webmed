@@ -75,7 +75,7 @@ const HalfRating: React.FC = () => {
           precision={0.5}
           style={{ fontSize: "45px" }}
         />
-        {value > 0.0 && <MainButton text="Тугатиш" onClick={handleFinish} />}
+        {value > 0.0 && <MainButton text="Закончить" onClick={handleFinish} />}
       </Stack>
     </div>
   );

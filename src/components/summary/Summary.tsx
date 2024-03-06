@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-	Grid,
-	Paper,
-	Typography,
-	Divider,
-    colors,
-    Box,
-    Chip,
+  Grid,
+  Paper,
+  Typography,
+  Divider,
+  colors,
+  Box,
+  Chip,
 } from "@mui/material";
 import WorkIcon from "@mui/icons-material/Work";
 import { LocationOn } from "@mui/icons-material";
@@ -16,48 +16,55 @@ import { BACKEND_URL, makeAppointment } from "../../utils/api";
 import { IDoctor } from "../doctor/types";
 import { IAppointment, ISelectedDateTime } from "../appointment/types";
 import { BackButton, MainButton } from "@vkruglikov/react-telegram-web-app";
-import { getPatientInfo, getSelectedDateTime, getSelectedDoctor, getUser } from "../../utils/storage";
+import {
+  getPatientInfo,
+  getSelectedDateTime,
+  getSelectedDoctor,
+  getUser,
+} from "../../utils/storage";
 import { months } from "../appointment/Calendar";
 import Header from "../header/Header";
 
 const Summary = () => {
-	const location = useLocation();
-	const { appointmentData } = location.state || {
-		appointmentData: {
-			selectedDoctor: getSelectedDoctor(),
-			patient: getPatientInfo(),
-			// selectedDateTime: getSelectedDateTime(),
-			user_id: getUser().id,
-		},
-	};
-	const selectedDoctor = appointmentData.selectedDoctor as IDoctor;
-	const patient = appointmentData.patient as IAppointment;
-	// const selectedDateTime = getSelectedDateTime() as ISelectedDateTime
-	const user_id = appointmentData.user_id
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+  const location = useLocation();
+  const { appointmentData } = location.state || {
+    appointmentData: {
+      selectedDoctor: getSelectedDoctor(),
+      patient: getPatientInfo(),
+      // selectedDateTime: getSelectedDateTime(),
+      user_id: getUser().id,
+    },
+  };
+  const selectedDoctor = appointmentData.selectedDoctor as IDoctor;
+  const patient = appointmentData.patient as IAppointment;
+  // const selectedDateTime = getSelectedDateTime() as ISelectedDateTime
+  const user_id = appointmentData.user_id;
 
-	const navigate = useNavigate();
+  const navigate = useNavigate();
 
-	const handleConfirm = async () => {
-		try {
-			const response = await makeAppointment({
-				user: user_id,
-				full_name: patient.name + " " + patient.surname,
-				phone_number: patient.phoneNumber,
-				additional_information: patient.additionalInfo,
-				// conference_date: selectedDateTime,
-				doctor_id: selectedDoctor.id.toString(),
-			});
-			console.log(response);
-			navigate("/payment", {
-		      state: {
-		        paymentUrl: response.payment_url
-		      },
-		    });
-		} catch (error: any) {
-			console.error(error.message)
-		}
-	}
-	return (
+  const handleConfirm = async () => {
+    try {
+      const response = await makeAppointment({
+        user: user_id,
+        full_name: patient.name + " " + patient.surname,
+        phone_number: patient.phoneNumber,
+        additional_information: patient.additionalInfo,
+        // conference_date: selectedDateTime,
+        doctor_id: selectedDoctor.id.toString(),
+      });
+      setPaymentUrl(response.payment_url);
+      // console.log(response);
+      // navigate("/payment", {
+      //     state: {
+      //       paymentUrl: response.payment_url
+      //     },
+      //   });
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+  return (
     <div style={{ width: "100%" }}>
       <BackButton onClick={() => navigate(-1)} />
       <Header title="Краткое содержание" />
@@ -141,6 +148,21 @@ const Summary = () => {
             </Typography>
           </Box>
         </Box>
+        {paymentUrl ? (
+          <a
+            href={paymentUrl}
+            style={{
+              color: "white",
+              fontSize: "30px",
+              textDecoration: "none",
+              padding: "10px 24px",
+              borderRadius: "10px",
+              border: "1px solid white",
+            }}
+          >
+            Перейти к оплате
+          </a>
+        ) : null}
       </Paper>
       <br />
       <br />

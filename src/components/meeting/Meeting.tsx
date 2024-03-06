@@ -362,6 +362,8 @@ const Meeting: React.FC = () => {
     });
   };
 
+  
+
   pc.oniceconnectionstatechange = (e) => {
     const connection = e.target as RTCPeerConnection;
     if (connection.iceConnectionState === "disconnected") {
@@ -410,13 +412,13 @@ const Meeting: React.FC = () => {
     }
 
     pc.close();
-    if (
-      isDoctor &&
-      callStatus === "outgoing" &&
-      connectionStatus === "connecting"
-    ) {
+    // if (
+    //   isDoctor &&
+    //   callStatus === "outgoing" &&
+    //   connectionStatus === "connecting"
+    // ) {
       patientDidNotAnswer(callId as string);
-    }
+    // }
 
     if (isDoctor) {
       setConnectionStatus("disconnected");
@@ -435,6 +437,8 @@ const Meeting: React.FC = () => {
       endCall(callId);
     }
   };
+
+
 
   const handleVideoCam = () => {
     if (localStream) {
