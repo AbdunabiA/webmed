@@ -4,9 +4,9 @@ import { ISelectedDateTime } from "../components/appointment/types";
 import { Message } from "../components/chat/Chat";
 
 // export const BACKEND_URL = "https://ca9b-194-93-25-68.ngrok-free.app/api/v1";
-export const BACKEND_URL = "https://telecure.ru/api/v1/";
+export const BACKEND_URL = "https://bd8b-194-93-25-68.ngrok-free.app/api/v1/";
 
-export const WEBSOCKET_API = "wss://telecure.ru/ws/"
+export const WEBSOCKET_API = "wss://bd8b-194-93-25-68.ngrok-free.app/ws/"
 
 export const API_BASE_URL = "https://telecure.ru/api/v1/";
 
