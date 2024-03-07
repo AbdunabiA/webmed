@@ -282,7 +282,10 @@ const Chat: React.FC = () => {
                   style={{
                     width: "90%",
                     maxHeight: "90%",
-                    filter: modal?.message?.status === "close" ? "blur(15px)" : "none",
+                    filter:
+                      modal?.message?.status === "close"
+                        ? "blur(15px)"
+                        : "none",
                   }}
                   src={"https://telecure.ru" + modal?.message?.image_bytes}
                   alt=""
@@ -319,7 +322,8 @@ const Chat: React.FC = () => {
                       maxWidth: "70%",
                       padding: "5px 10px",
                       borderRadius: "15px",
-                      backgroundColor: "#2671bd",
+                      backgroundColor:
+                        chatInfo.type === message.type ? "#2671bd" : "#210a6d",
                     }}
                   >{` ${message?.message}`}</p>
                 ) : null}

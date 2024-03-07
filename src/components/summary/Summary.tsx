@@ -26,7 +26,7 @@ import { months } from "../appointment/Calendar";
 import Header from "../header/Header";
 
 const Summary = () => {
-  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+  // const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
   const location = useLocation();
   const { appointmentData } = location.state || {
     appointmentData: {
@@ -53,7 +53,8 @@ const Summary = () => {
         // conference_date: selectedDateTime,
         doctor_id: selectedDoctor.id.toString(),
       });
-      setPaymentUrl(response.payment_url);
+       window.open(response.payment_url);
+      // setPaymentUrl(response.payment_url);
       // console.log(response);
       // navigate("/payment", {
       //     state: {
@@ -177,41 +178,22 @@ const Summary = () => {
       <br />
       <br />
       <br />
-      {paymentUrl ? (
-        <a href={paymentUrl}>
-          <button
-            style={{
-              position: "absolute",
-              bottom: "0",
-              left: "0",
-              width: "100%",
-              padding: "10px",
-              fontSize: "20px",
-              backgroundColor: "#057da5",
-              color: "white",
-            }}
-          >
-            Перейти к оплате
-          </button>
-        </a>
-      ) : (
-        // <MainButton text="Подтверждать" onClick={handleConfirm} />
-        <button
-          style={{
-            position: "absolute",
-            bottom: "0",
-            left: "0",
-            width: "100%",
-            padding: "10px",
-            fontSize: "20px",
-            backgroundColor: "#057da5",
-            color: "white",
-          }}
-          onClick={handleConfirm}
-        >
-          Подтверждать
-        </button>
-      )}
+      {/* {paymentUrl ? ( */}
+      <button
+        style={{
+          position: "absolute",
+          bottom: "0",
+          left: "0",
+          width: "100%",
+          padding: "10px",
+          fontSize: "20px",
+          backgroundColor: "#057da5",
+          color: "white",
+        }}
+        onClick={handleConfirm}
+      >
+        Перейти к оплате
+      </button>
     </div>
   );
 };
