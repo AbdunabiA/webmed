@@ -53,7 +53,7 @@ const Summary = () => {
         // conference_date: selectedDateTime,
         doctor_id: selectedDoctor.id.toString(),
       });
-       window.open(response.payment_url);
+       window.open(response.payment_url, "_top");
       // setPaymentUrl(response.payment_url);
       // console.log(response);
       // navigate("/payment", {
