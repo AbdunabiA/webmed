@@ -616,7 +616,7 @@ const Meeting: React.FC = () => {
           borderRadius: "10px",
         }}
       >
-        {isAndroid ? (
+        {isAndroid && connectionStatus === 'connected' ? (
           <p
             style={{
               position: "absolute",
