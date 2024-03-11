@@ -132,6 +132,15 @@ const Meeting: React.FC = () => {
   const [socketDoctor, setSocketDoctor] = useState<WebSocket>();
 
   const [bufferData, setBufferData] = useState<{ local: any; remote: any }>();
+  function detectOS() {
+    const userAgent = navigator.userAgent;
+    if (/android/i.test(userAgent)) {
+      return true;
+    }
+    return false;
+  }
+
+  const [isAndroid, setIsAndroid] = React.useState(detectOS());
 
   const { callId, callInfo } = useParams();
   const callDetails = decryptVideoCallId(String(callInfo));
@@ -362,8 +371,6 @@ const Meeting: React.FC = () => {
     });
   };
 
-  
-
   pc.oniceconnectionstatechange = (e) => {
     const connection = e.target as RTCPeerConnection;
     if (connection.iceConnectionState === "disconnected") {
@@ -417,7 +424,7 @@ const Meeting: React.FC = () => {
     //   callStatus === "outgoing" &&
     //   connectionStatus === "connecting"
     // ) {
-      patientDidNotAnswer(callId as string);
+    patientDidNotAnswer(callId as string);
     // }
 
     if (isDoctor) {
@@ -437,8 +444,6 @@ const Meeting: React.FC = () => {
       endCall(callId);
     }
   };
-
-
 
   const handleVideoCam = () => {
     if (localStream) {
@@ -611,6 +616,22 @@ const Meeting: React.FC = () => {
           borderRadius: "10px",
         }}
       >
+        {isAndroid ? (
+          <p
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              fontSize: "26px", 
+              color:"white",
+              width:"70%",
+              zIndex:"9999"
+            }}
+          >
+            Android устройства еще не поддерживаются
+          </p>
+        ) : null}
         <video
           style={{
             objectFit: "cover",
