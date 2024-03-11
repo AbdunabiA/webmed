@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Rating,
   Typography,
   colors,
 } from "@mui/material";
@@ -83,7 +84,14 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                     }}
                   />
                   <Typography variant="caption">
-                    4.39 ({card.reviews} reviews)
+                    <Rating
+                      name="half-rating"
+                      value={card.rating}
+                      // onChange={handleValue}
+                      precision={0.5}
+                      // style={{ fontSize: "45px" }}
+                    />
+                    {/* ({card.reviews} reviews) */}
                   </Typography>
                 </Box>
                 <Typography variant="caption">

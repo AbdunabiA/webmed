@@ -13,6 +13,7 @@ export interface IDoctor {
 	direction: string;
 	price: number;
 	about: string;
+	rating: number;
 	// experience: string;
 	// services: string;
 	reviews: number;
