@@ -77,19 +77,19 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                   {card.direction}
                 </Typography>
                 <Box display="flex">
-                  <Star
+                  {/* <Star
                     sx={{
                       fontSize: "14px",
                       color: colors.grey[500],
                     }}
-                  />
+                  /> */}
                   <Typography variant="caption">
                     <Rating
                       name="half-rating"
                       value={card.rating}
                       // onChange={handleValue}
                       precision={0.5}
-                      // style={{ fontSize: "45px" }}
+                      style={{ fontSize: "16px" }}
                     />
                     {/* ({card.reviews} reviews) */}
                   </Typography>
