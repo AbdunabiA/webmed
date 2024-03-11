@@ -17,6 +17,8 @@ const DoctorsList = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const navigate = useNavigate();
 
+  console.log("doctors", doctorsList);
+  
   useEffect(() => {
     const fetchDoctorsData = async () => {
       const { doctors, directions } = await getDoctors(getUser().id as string);
