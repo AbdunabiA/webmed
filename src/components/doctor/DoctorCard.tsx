@@ -95,7 +95,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                   </Typography>
                 </Box>
                 <Typography variant="caption">
-                  Нархи: {card.price} RUB
+                  Цена консультации: {card.price} RUB
                 </Typography>
               </Box>
               <Typography
