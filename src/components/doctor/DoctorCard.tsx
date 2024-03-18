@@ -91,7 +91,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                       precision={0.5}
                       style={{ fontSize: "16px" }}
                     />
-                    {/* ({card.reviews} reviews) */}
+                    ({card.voted_patients} reviews)
                   </Typography>
                 </Box>
                 <Typography variant="caption">

@@ -16,6 +16,7 @@ export interface IDoctor {
 	rating: number;
 	// experience: string;
 	// services: string;
+	voted_patients:number;
 	reviews: number;
 	busy: boolean;
 	activate_url: string;
