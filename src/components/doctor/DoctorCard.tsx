@@ -91,8 +91,8 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
                       precision={0.5}
                       style={{ fontSize: "16px" }}
                     />
-                    ({card.voted_patients} reviews)
                   </Typography>
+                    ({card.voted_patients} голосов)
                 </Box>
                 <Typography variant="caption">
                   Цена консультации: {card.price} RUB
