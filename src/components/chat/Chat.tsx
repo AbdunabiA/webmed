@@ -353,7 +353,9 @@ const Chat: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          <form onSubmit={handleSendMessage}>
+          {
+            messages[0].status !== "close" ? (
+              <form onSubmit={handleSendMessage}>
             <Grid container spacing={2} style={{ marginTop: "20px" }}>
               <Grid item xs={12} sx={{ display: "flex" }}>
                 <Button
@@ -380,7 +382,8 @@ const Chat: React.FC = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControl fullWidth>
+               
+                    <FormControl fullWidth>
                   <Button
                     type="submit"
                     fullWidth
@@ -393,6 +396,9 @@ const Chat: React.FC = () => {
               </Grid>
             </Grid>
           </form>
+            ) : null
+          }
+
         </Paper>
       </div>
     </Container>
